@@ -1,0 +1,2247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>装修管家 - 支出记录</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4f46e5', // 主色调 - 紫色
+            secondary: '#8b5cf6', // 辅助色 - 浅紫色
+            success: '#10b981', // 成功色 - 绿色
+            warning: '#f59e0b', // 警告色 - 黄色
+            danger: '#ef4444', // 危险色 - 红色
+            neutral: {
+              50: '#f9fafb',
+              100: '#f3f4f6',
+              200: '#e5e7eb',
+              300: '#d1d5db',
+              400: '#9ca3af',
+              500: '#6b7280',
+              600: '#4b5563',
+              700: '#374151',
+              800: '#1f2937',
+              900: '#111827',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      /* 自定义工具类 */
+      .content-auto { content-visibility: auto; }
+      .card-shadow {
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      }
+      .card-hover {
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      .hover-lift {
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .hover-lift:hover {
+        transform: translateY(-1px);
+      }
+      .table-row-animate {
+        transition: all 0.3s;
+      }
+      .nowrap-header {
+        white-space: nowrap;
+      }
+      .input-focus:focus {
+        outline: none;
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      }
+      .module-container {
+        transition: all 0.3s ease;
+      }
+      
+      /* 解决点击页面时内容区域出现闪烁光标的问题 */
+      .no-select {
+        user-select: none;
+      }
+      
+      /* 保持表单元素的正常选择和编辑功能 */
+      .allow-select {
+        user-select: auto;
+      }
+    }
+  </style>
+</head>
+<body class="bg-neutral-50 text-neutral-800 min-h-screen no-select">
+  <div class="flex flex-col min-h-screen">
+    <!-- 导航栏 -->
+    <header class="bg-white border-b border-neutral-200 sticky top-0 z-30">
+      <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <i class="fa fa-home text-primary text-2xl"></i>
+          <h1 class="text-xl font-bold text-neutral-800">装修管家</h1>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+          <a href="支出记录.html" class="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors">支出记录</a>
+          <a href="注意事项.html" class="px-4 py-2 rounded-lg bg-white text-primary border border-primary font-medium hover:bg-primary/5 transition-colors">注意事项</a>
+          <button class="text-neutral-500 hover:text-neutral-700 p-2 rounded-full hover:bg-neutral-100 transition-colors">
+            <i class="fa fa-question-circle"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="flex-grow container mx-auto px-4 py-6 no-select">
+      <!-- 支出记录模块 -->
+      <div id="expenseModule" class="module-container">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- 左侧：添加支出表单 -->
+          <div class="lg:col-span-3 lg:pr-4">
+            <div class="bg-white rounded-xl p-5 card-shadow hover-lift transition-all duration-300">
+              <h2 class="text-lg md:text-xl font-semibold mb-4 flex items-center text-neutral-700">
+                <i class="fa fa-plus-circle text-primary mr-2"></i>添加支出项目
+              </h2>
+              
+              <form id="expenseForm" class="space-y-4">
+                <div>
+              <label for="category" class="block text-sm font-medium text-neutral-600 mb-1">类别</label>
+              <select id="category" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                <option value="地板">地板</option>
+                <option value="墙面">墙面</option>
+                <option value="门窗">门窗</option>
+                <option value="厨卫">厨卫</option>
+                <option value="水电">水电</option>
+                <option value="家具">家具</option>
+                <option value="灯具">灯具</option>
+                <option value="电器" selected>电器</option>
+                <option value="人工">人工</option>
+                <option value="其他">其他</option>
+              </select>
+            </div>
+                
+                <div>
+                  <label for="area" class="block text-sm font-medium text-neutral-600 mb-1">区域</label>
+                  <select id="area" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                    <option value="客厅">客厅</option>
+                    <option value="厨房">厨房</option>
+                    <option value="主卧">主卧</option>
+                    <option value="衣帽间">衣帽间</option>
+                    <option value="书房">书房</option>
+                    <option value="主卫">主卫</option>
+                    <option value="次卫">次卫</option>
+                    <option value="家政间">家政间</option>
+                    <option value="全屋">全屋</option>
+                    <option value="其他">其他</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label for="name" class="block text-sm font-medium text-neutral-600 mb-1">名称</label>
+                  <input type="text" id="name" placeholder="请输入项目名称" 
+                    class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                </div>
+                
+                <div>
+                  <label for="brand" class="block text-sm font-medium text-neutral-600 mb-1">品牌 (可选)</label>
+                  <input type="text" id="brand" placeholder="请输入品牌名称" 
+                    class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                </div>
+                
+                <div>
+                  <label for="model" class="block text-sm font-medium text-neutral-600 mb-1">型号 (可选)</label>
+                  <input type="text" id="model" placeholder="请输入产品型号" 
+                    class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                </div>
+                
+                <div>
+                  <label for="status" class="block text-sm font-medium text-neutral-600 mb-1">状态</label>
+                  <select id="status" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                    <option value="已加购">已加购</option>
+                    <option value="已下单">已下单</option>
+                    <option value="已到货">已到货</option>
+                    <option value="已安装">已安装</option>
+                    <option value="已验收">已验收</option>
+                    <option value="已退货">已退货</option>
+                  </select>
+                </div>
+                
+                <div>
+              <label for="channel" class="block text-sm font-medium text-neutral-600 mb-1">购买渠道</label>
+              <select id="channel" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                <option value="线下实体店">线下实体店</option>
+                <option value="京东" selected>京东</option>
+                <option value="天猫">天猫</option>
+                <option value="其他">其他</option>
+              </select>
+            </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label for="price" class="block text-sm font-medium text-neutral-600 mb-1">单价</label>
+                    <input type="number" id="price" step="0.01" min="0" placeholder="0.00" 
+                      class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                  </div>
+                  <div>
+                    <label for="quantity" class="block text-sm font-medium text-neutral-600 mb-1">数量</label>
+                    <input type="number" id="quantity" step="1" min="1" value="1" 
+                      class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                  </div>
+                </div>
+                
+                <div>
+                  <label for="purchaseDate" class="block text-sm font-medium text-neutral-600 mb-1">购买日期</label>
+                  <input type="date" id="purchaseDate" 
+                    class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-neutral-600 mb-1">图片 (可选)</label>
+                  <div class="flex space-x-2">
+                    <!-- 左侧：选择文件按钮 -->
+                    <button type="button" id="selectImageButton" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center whitespace-nowrap">
+                      <i class="fa fa-upload mr-2"></i>选择图片文件
+                    </button>
+                    <!-- 右侧：粘贴区域 -->
+                    <div id="imageUploadArea" class="flex-1 border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center bg-neutral-50 cursor-text hover:border-primary transition-colors relative">
+                      <input type="file" id="imageInput" accept="image/*" class="hidden">
+                      <div class="py-2">
+                        <i class="fa fa-paste text-neutral-400 text-xl mb-2"></i>
+                        <p class="text-sm text-neutral-500">点击此处并粘贴图片</p>
+                        <p id="imagePreviewText" class="text-xs text-neutral-400 mt-1 hidden">图片已添加</p>
+                      </div>
+                      <button id="deleteImageButton" class="absolute top-2 right-2 text-neutral-500 hover:text-danger p-1 rounded-full hover:bg-neutral-100 transition-colors hidden">
+                        <i class="fa fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <input type="hidden" id="imageUrl" value="">
+                </div>
+                
+                <div>
+                  <label for="notes" class="block text-sm font-medium text-neutral-600 mb-1">备注 (可选)</label>
+                  <textarea id="notes" rows="3" placeholder="添加备注信息..."
+                    class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all"></textarea>
+                </div>
+                
+                <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2.5 px-4 rounded-lg transition-all flex items-center justify-center transform hover:translate-y-[-1px] active:translate-y-0 shadow-md hover:shadow-lg">
+                  <i class="fa fa-save mr-2"></i>保存记录
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- 右侧：统计和支出记录列表 -->
+          <div class="lg:col-span-9">
+            <!-- 统计图表区域 -->
+            <div class="bg-white rounded-xl p-5 mb-4 card-shadow hover-lift transition-all duration-300">
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold flex items-center text-neutral-700">
+                  <i class="fa fa-pie-chart text-primary mr-2"></i>支出统计
+                </h2>
+                <div class="flex space-x-2">
+                  <button id="categoryChartBtn" class="px-3 py-1 text-sm bg-primary text-white rounded-lg">类别统计</button>
+                  <button id="areaChartBtn" class="px-3 py-1 text-sm bg-neutral-100 text-neutral-600 rounded-lg hover:bg-neutral-200 transition-colors">区域统计</button>
+                </div>
+              </div>
+              
+              <div class="flex flex-col md:flex-row items-center justify-center">
+                <div class="w-full md:w-1/2 flex justify-center">
+                  <canvas id="expenseChart" width="300" height="300"></canvas>
+                </div>
+                <div class="w-full md:w-1/2 p-4">
+                  <div class="text-center mb-4">
+                    <p class="text-neutral-500 text-sm">总支出</p>
+                    <p id="totalExpenseAmount" class="text-3xl font-bold text-primary">¥0.00</p>
+                  </div>
+                  <div id="chartLegend" class="space-y-2">
+                    <!-- 图例将通过JavaScript动态生成 -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 支出记录列表 -->
+            <div class="bg-white rounded-xl p-5 card-shadow hover-lift transition-all duration-300 hover:shadow-lg">
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+                <h2 class="text-lg md:text-xl font-semibold flex items-center text-neutral-700">
+                  <i class="fa fa-list-alt text-primary mr-2"></i>支出记录
+                </h2>
+                
+                <div class="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
+                  <!-- 文件导入导出按钮 -->
+                  <div class="flex space-x-2">
+                    <button id="exportData" class="px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all flex items-center">
+                      <i class="fa fa-upload mr-1"></i> 导出数据
+                    </button>
+                    <button id="importData" class="px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all flex items-center">
+                      <i class="fa fa-download mr-1"></i> 导入数据
+                    </button>
+                    <button id="clearAllRecords" class="px-3 py-1.5 border border-danger rounded-lg text-sm input-focus transition-all flex items-center text-danger hover:bg-danger/5">
+                      <i class="fa fa-trash mr-1"></i> 清空所有记录
+                    </button>
+                    <input type="file" id="fileInput" accept=".json" class="hidden">
+                  </div>
+                  <!-- 类别筛选 -->
+                  <div class="relative w-full sm:w-auto">
+                    <select id="categoryFilter" class="w-full sm:w-auto px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all">
+                      <option value="all">全部分类</option>
+                      <option value="地板">地板</option>
+                      <option value="墙面">墙面</option>
+                      <option value="门窗">门窗</option>
+                      <option value="厨卫">厨卫</option>
+                      <option value="水电">水电</option>
+                      <option value="家具">家具</option>
+                      <option value="灯具">灯具</option>
+                      <option value="电器">电器</option>
+                      <option value="人工">人工</option>
+                      <option value="其他">其他</option>
+                    </select>
+                  </div>
+                  
+                  <!-- 区域筛选 -->
+                  <div class="relative w-full sm:w-auto">
+                    <select id="areaFilter" class="w-full sm:w-auto px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all">
+                      <option value="all">全部区域</option>
+                      <option value="客厅">客厅</option>
+                      <option value="厨房">厨房</option>
+                      <option value="主卧">主卧</option>
+                      <option value="衣帽间">衣帽间</option>
+                      <option value="书房">书房</option>
+                      <option value="主卫">主卫</option>
+                      <option value="次卫">次卫</option>
+                      <option value="家政间">家政间</option>
+                      <option value="全屋">全屋</option>
+                      <option value="其他">其他</option>
+                    </select>
+                  </div>
+                  
+                  <!-- 状态筛选 -->
+                  <div class="relative w-full sm:w-auto">
+                    <select id="statusFilter" class="w-full sm:w-auto px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all">
+                      <option value="all">全部状态</option>
+                      <option value="已加购">已加购</option>
+                      <option value="已下单">已下单</option>
+                      <option value="已到货">已到货</option>
+                      <option value="已安装">已安装</option>
+                      <option value="已验收">已验收</option>
+                      <option value="已退货">已退货</option>
+                    </select>
+                  </div>
+                  
+                  <!-- 搜索框 -->
+                  <div class="relative w-full sm:w-auto">
+                    <input type="text" id="searchInput" placeholder="搜索项目..." 
+                      class="pl-8 pr-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all w-full">
+                    <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400"></i>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 过滤结果统计 -->
+              <div id="filterStats" class="mb-4 text-sm text-neutral-500 hidden">
+                显示 <span id="filteredCount">0</span> 条记录，总计 <span id="totalExpense">0</span> 元
+              </div>
+              
+              <div class="overflow-x-auto">
+                <table class="w-full min-w-[1000px] divide-y divide-neutral-200 dark:divide-neutral-700">
+                  <thead>
+                    <tr>
+                      <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider rounded-tl-lg whitespace-nowrap">
+                        类别
+                      </th>
+                      <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider whitespace-nowrap">
+                        区域
+                      </th>
+                      <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider min-w-[100px] whitespace-nowrap">名称</th>
+                      <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider whitespace-nowrap">品牌</th>
+                      <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider whitespace-nowrap">型号</th>
+                      <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider whitespace-nowrap">状态</th>
+                      <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider whitespace-nowrap">渠道</th>
+                      <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider whitespace-nowrap">单价/数量</th>
+                      <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider whitespace-nowrap">总价</th>
+                      <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider whitespace-nowrap">图片</th>
+                      <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider whitespace-nowrap">备注</th>
+                      <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider rounded-tr-lg whitespace-nowrap">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="expenseList" class="bg-white divide-y divide-neutral-200">
+                    <!-- 项目记录将通过JavaScript动态添加 -->
+                    <tr class="text-center table-row-animate">
+                      <td colspan="12" class="px-3 py-8 text-neutral-400">
+                        <i class="fa fa-folder-open-o text-2xl mb-2 block"></i>
+                        暂无记录，添加您的第一个装修项目吧
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 编辑项目模态框 -->
+    <div id="editModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden transition-opacity duration-300">
+      <div class="bg-white dark:bg-neutral-800 rounded-xl p-5 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0 card-shadow" id="editModalContent">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold text-neutral-700 dark:text-white">编辑项目</h3>
+          <button id="closeEditModal" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors">
+            <i class="fa fa-times text-lg"></i>
+          </button>
+        </div>
+        
+        <form id="editForm" class="space-y-4">
+          <input type="hidden" id="editId" />
+          
+          <div>
+            <label for="editCategory" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">类别</label>
+            <select id="editCategory" class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+              <option value="地板">地板</option>
+              <option value="墙面">墙面</option>
+              <option value="门窗">门窗</option>
+              <option value="厨卫">厨卫</option>
+              <option value="水电">水电</option>
+              <option value="家具">家具</option>
+              <option value="灯具">灯具</option>
+              <option value="电器">电器</option>
+              <option value="人工">人工</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+
+          <!-- 编辑模态框添加使用区域 -->
+          <div>
+            <label for="editArea" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">使用区域</label>
+            <select id="editArea" class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+              <option value="客厅">客厅</option>
+              <option value="厨房">厨房</option>
+              <option value="主卧">主卧</option>
+              <option value="衣帽间">衣帽间</option>
+              <option value="书房">书房</option>
+              <option value="主卫">主卫</option>
+              <option value="次卫">次卫</option>
+              <option value="家政间">家政间</option>
+              <option value="全屋">全屋</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+          
+          <div>
+            <label for="editName" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">名称</label>
+            <input type="text" id="editName" 
+              class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+          </div>
+          
+          <div>
+            <label for="editBrand" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">品牌</label>
+            <input type="text" id="editBrand" 
+              class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+          </div>
+          
+          <div>
+            <label for="editModel" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">型号</label>
+            <input type="text" id="editModel" 
+              class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+          </div>
+          
+          <div>
+            <label for="editStatus" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">状态</label>
+            <select id="editStatus" class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+              <option value="已加购">已加购</option>
+              <option value="已下单">已下单</option>
+              <option value="已到货">已到货</option>
+              <option value="已安装">已安装</option>
+              <option value="已验收">已验收</option>
+              <option value="已退货">已退货</option>
+            </select>
+          </div>
+          
+          <div>
+              <label for="editChannel" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">购买渠道</label>
+              <select id="editChannel" class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+                <option value="线下实体店">线下实体店</option>
+                <option value="京东">京东</option>
+                <option value="天猫">天猫</option>
+                <option value="其他">其他</option>
+              </select>
+            </div>
+          
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="editPrice" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">单价</label>
+              <input type="number" id="editPrice" step="0.01" min="0" 
+                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+            </div>
+            <div>
+              <label for="editQuantity" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">数量</label>
+              <input type="number" id="editQuantity" step="1" min="1" 
+                class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+            </div>
+          </div>
+          
+          <div>
+            <label for="editPurchaseDate" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">购买日期</label>
+            <input type="date" id="editPurchaseDate" 
+              class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+          </div>
+          
+          <div>
+              <label class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">图片</label>
+              <div class="flex space-x-2">
+                <!-- 左侧：选择文件按钮 -->
+                <button type="button" id="editSelectImageButton" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center whitespace-nowrap">
+                  <i class="fa fa-upload mr-2"></i>选择图片文件
+                </button>
+                <!-- 右侧：粘贴区域 -->
+                <div id="editImageUploadArea" class="flex-1 border-2 border-dashed border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 rounded-lg p-4 text-center cursor-text hover:border-primary transition-colors relative">
+                  <input type="file" id="editImageInput" accept="image/*" class="hidden">
+                  <div class="py-2">
+                    <i class="fa fa-paste text-neutral-400 dark:text-neutral-500 text-xl mb-2"></i>
+                    <p class="text-sm text-neutral-500 dark:text-neutral-400">点击此处并粘贴图片</p>
+                    <p id="editImagePreviewText" class="text-xs text-neutral-400 dark:text-neutral-500 mt-1 hidden">图片已添加</p>
+                  </div>
+                  <button id="deleteEditImageButton" class="absolute top-2 right-2 text-neutral-500 hover:text-danger p-1 rounded-full hover:bg-neutral-100 transition-colors hidden">
+                    <i class="fa fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <input type="hidden" id="editImageUrl" value="">
+            </div>
+          
+          <div>
+            <label for="editNotes" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">备注</label>
+            <textarea id="editNotes" rows="3"
+              class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all"></textarea>
+          </div>
+          
+          <div class="flex justify-end gap-3">
+            <button type="button" id="cancelEdit" class="px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-50 transition-colors">
+              取消
+            </button>
+            <button type="submit" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-colors">
+              保存更改
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 确认删除模态框 -->
+    <div id="confirmDeleteModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden transition-opacity duration-300">
+      <div class="bg-white dark:bg-neutral-800 rounded-xl p-5 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0 card-shadow" id="confirmDeleteModalContent">
+        <div class="text-center mb-4">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 text-danger mb-4">
+            <i class="fa fa-exclamation-triangle text-2xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-neutral-800 dark:text-white">确认删除</h3>
+          <p class="text-neutral-500 dark:text-neutral-400 mt-2">您确定要删除这条记录吗？此操作不可撤销。</p>
+        </div>
+        
+        <div class="flex justify-center gap-3">
+          <button type="button" id="cancelDelete" class="px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-50 transition-colors">
+            取消
+          </button>
+          <button type="button" id="confirmDelete" class="px-4 py-2 bg-danger hover:bg-danger/90 text-white font-medium rounded-lg transition-colors">
+            删除
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 清空记录确认模态框 -->
+    <div id="confirmClearModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden transition-opacity duration-300">
+      <div id="confirmClearModalContent" class="bg-white rounded-xl w-full max-w-md mx-4 transform transition-all duration-300 scale-95 opacity-0">
+        <div class="p-6">
+          <div class="text-center mb-4">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-danger/10 text-danger mb-3">
+              <i class="fa fa-exclamation-triangle text-xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-neutral-800">确认清空所有记录</h3>
+            <p class="text-neutral-500 mt-2">您确定要清空所有支出记录吗？此操作不可撤销，所有数据将被永久删除。</p>
+          </div>
+          
+          <div class="flex justify-center gap-3">
+            <button type="button" id="cancelClearAll" class="px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-50 transition-colors">
+              取消
+            </button>
+            <button type="button" id="confirmClearAll" class="px-4 py-2 bg-danger hover:bg-danger/90 text-white font-medium rounded-lg transition-colors">
+              确认清空
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 图片预览模态框 -->
+    <div id="imagePreviewModal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden transition-opacity duration-300">
+      <div class="relative w-full max-w-4xl max-h-[90vh] p-4">
+        <button id="closeImagePreview" class="absolute top-4 right-4 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center z-10 hover:bg-black/70 transition-colors">
+          <i class="fa fa-times"></i>
+        </button>
+        <div class="relative w-full h-full flex items-center justify-center">
+          <img id="previewImage" src="" alt="预览图片" class="max-w-full max-h-[80vh] object-contain">
+        </div>
+      </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-neutral-200 py-4 mt-auto">
+      <div class="container mx-auto px-4 text-center text-neutral-500 text-sm">
+        <p>装修管家支出记录 © 2024 | 版本号: v1.0.0</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // IndexedDB数据库管理器
+    const IndexedDBManager = {
+      DB_NAME: 'decoration_expenses_db', // 使用独立的数据库名称避免冲突
+      DB_VERSION: 1,
+      STORE_NAME: 'expenses',
+      db: null,
+
+      // 初始化数据库
+      initDB() {
+        return new Promise((resolve, reject) => {
+          if (this.db && this.db.readyState !== 'closed') {
+            resolve(this.db);
+            return;
+          }
+
+          const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+
+          request.onerror = event => {
+            console.error('打开数据库失败:', event.target.error);
+            reject(event.target.error);
+          };
+
+          request.onsuccess = event => {
+            this.db = event.target.result;
+            // 监听数据库关闭事件
+            this.db.onclose = () => {
+              this.db = null;
+            };
+            resolve(this.db);
+          };
+
+          request.onupgradeneeded = event => {
+            const db = event.target.result;
+            
+            // 如果存储对象不存在，则创建
+            if (!db.objectStoreNames.contains(this.STORE_NAME)) {
+              const objectStore = db.createObjectStore(this.STORE_NAME, { keyPath: 'id' });
+              // 创建索引以提高查询性能
+              objectStore.createIndex('category', 'category', { unique: false });
+              objectStore.createIndex('area', 'area', { unique: false });
+              objectStore.createIndex('date', 'date', { unique: false });
+            }
+          };
+        });
+      },
+
+      // 获取所有记录
+      async getAllRecords() {
+        try {
+          const db = await this.initDB();
+          return new Promise((resolve, reject) => {
+            const transaction = db.transaction([this.STORE_NAME], 'readonly');
+            const objectStore = transaction.objectStore(this.STORE_NAME);
+            const request = objectStore.getAll();
+
+            request.onerror = event => {
+              console.error('获取记录失败:', event.target.error);
+              reject(event.target.error);
+            };
+
+            request.onsuccess = event => {
+              // 确保返回数组
+              const records = event.target.result || [];
+              // 按日期倒序排序（最新的在前面）
+              records.sort((a, b) => {
+                // 首先比较完整的时间戳部分（前13位）
+                if (a.id && b.id) {
+                  const timestampA = parseInt(a.id.substring(0, 13));
+                  const timestampB = parseInt(b.id.substring(0, 13));
+                  if (timestampA !== timestampB) {
+                    return timestampB - timestampA;
+                  }
+                  // 同一毫秒内的记录，比较完整ID以确保稳定排序
+                  return b.id.localeCompare(a.id);
+                }
+                // 再按日期排序
+                return new Date(b.date) - new Date(a.date);
+              });
+              resolve(records);
+            };
+          });
+        } catch (e) {
+          console.error('获取记录出错:', e);
+          return [];
+        }
+      },
+
+      // 保存单个记录
+      async saveRecord(record) {
+        try {
+          const db = await this.initDB();
+          return new Promise((resolve, reject) => {
+            const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+            const objectStore = transaction.objectStore(this.STORE_NAME);
+            const request = objectStore.put(record);
+
+            request.onerror = event => {
+              console.error('保存记录失败:', event.target.error);
+              reject(event.target.error);
+            };
+
+            request.onsuccess = event => {
+              resolve(record);
+            };
+          });
+        } catch (e) {
+          console.error('保存记录出错:', e);
+          return null;
+        }
+      },
+
+      // 删除记录
+      async deleteRecord(id) {
+        try {
+          const db = await this.initDB();
+          return new Promise((resolve, reject) => {
+            const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+            const objectStore = transaction.objectStore(this.STORE_NAME);
+            const request = objectStore.delete(id);
+
+            request.onerror = event => {
+              console.error('删除记录失败:', event.target.error);
+              reject(event.target.error);
+            };
+
+            request.onsuccess = event => {
+              resolve(true);
+            };
+          });
+        } catch (e) {
+          console.error('删除记录出错:', e);
+          return false;
+        }
+      },
+
+      // 获取单个记录
+      async getRecord(id) {
+        try {
+          const db = await this.initDB();
+          return new Promise((resolve, reject) => {
+            const transaction = db.transaction([this.STORE_NAME], 'readonly');
+            const objectStore = transaction.objectStore(this.STORE_NAME);
+            const request = objectStore.get(id);
+
+            request.onerror = event => {
+              console.error('获取单个记录失败:', event.target.error);
+              reject(event.target.error);
+            };
+
+            request.onsuccess = event => {
+              resolve(event.target.result || null);
+            };
+          });
+        } catch (e) {
+          console.error('获取单个记录出错:', e);
+          return null;
+        }
+      },
+
+      // 清空所有记录
+      async clearAllRecords() {
+        try {
+          const db = await this.initDB();
+          return new Promise((resolve, reject) => {
+            const transaction = db.transaction([this.STORE_NAME], 'readwrite');
+            const objectStore = transaction.objectStore(this.STORE_NAME);
+            const request = objectStore.clear();
+
+            request.onerror = event => {
+              console.error('清空记录失败:', event.target.error);
+              reject(event.target.error);
+            };
+
+            request.onsuccess = event => {
+              resolve(true);
+            };
+          });
+        } catch (e) {
+          console.error('清空记录出错:', e);
+          return false;
+        }
+      }
+    };
+
+    // 数据存储对象
+    const DataManager = {
+      
+      // 获取所有记录
+      async getAllRecords() {
+        return await IndexedDBManager.getAllRecords();
+      },
+      
+      // 保存所有记录（保留此方法以兼容现有代码）
+      async saveRecords(records) {
+        try {
+          // 清空现有记录
+          await IndexedDBManager.clearAllRecords();
+          
+          // 逐条保存新记录
+          for (const record of records) {
+            await IndexedDBManager.saveRecord(record);
+          }
+          return true;
+        } catch (e) {
+          console.error('批量保存记录失败:', e);
+          return false;
+        }
+      },
+      
+      // 添加记录
+      async addRecord(record) {
+        try {
+          // 验证必要字段
+          if (!record || !record.category || !record.amount || !record.date) {
+            console.error('添加支出记录失败: 缺少必要字段（类别、金额或日期）');
+            return null;
+          }
+          
+          console.log('开始添加支出记录:', JSON.stringify(record, null, 2));
+          
+          // 生成唯一ID（使用时间戳+随机字符串）
+          record.id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+          
+          // 添加创建时间
+          record.createdAt = new Date().toISOString();
+          
+          // 确保金额为数字类型
+          if (typeof record.amount === 'string') {
+            record.amount = parseFloat(record.amount);
+          }
+          
+          // 确保所有必需的索引字段都存在
+          if (!record.area) record.area = '未指定';
+          
+          console.log('支出记录预处理完成，准备保存:', record.id);
+          
+          // 保存记录
+          const result = await IndexedDBManager.saveRecord(record);
+          
+          if (result) {
+            console.log('支出记录保存成功:', result.id);
+          } else {
+            console.error('支出记录保存失败: 返回结果为空');
+          }
+          
+          return result;
+        } catch (e) {
+          console.error('添加支出记录异常:', e.stack || e);
+          return null;
+        }
+      },
+      
+      // 更新记录
+      async updateRecord(id, updatedRecord) {
+        try {
+          // 先获取现有记录
+          const existingRecord = await this.getRecord(id);
+          if (existingRecord) {
+            // 合并更新字段
+            const recordToUpdate = { ...existingRecord, ...updatedRecord };
+            await IndexedDBManager.saveRecord(recordToUpdate);
+            return true;
+          }
+          return false;
+        } catch (e) {
+          console.error('更新记录失败:', e);
+          return false;
+        }
+      },
+      
+      // 删除记录
+      async deleteRecord(id) {
+        return await IndexedDBManager.deleteRecord(id);
+      },
+      
+      // 获取单个记录
+      async getRecord(id) {
+        return await IndexedDBManager.getRecord(id);
+      },
+      
+      // 导出数据到文件
+      async exportData() {
+        try {
+          const records = await this.getAllRecords();
+          const dataStr = JSON.stringify(records, null, 2);
+          const dataBlob = new Blob([dataStr], { type: 'application/json' });
+          const url = URL.createObjectURL(dataBlob);
+          
+          const link = document.createElement('a');
+          link.href = url;
+          // 使用当前页面名称作为文件名的一部分
+          const pageName = '支出记录';
+          link.download = `装修${pageName}_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.json`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          
+          return true;
+        } catch (e) {
+          console.error('导出数据失败:', e);
+          return false;
+        }
+      },
+      
+      // 导入数据
+      async importData(jsonData) {
+        try {
+          const records = JSON.parse(jsonData);
+          if (Array.isArray(records)) {
+            // 获取当前已存在的记录ID列表，避免重复导入
+            const existingRecords = await IndexedDBManager.getAllRecords();
+            const existingIds = new Set(existingRecords.map(record => record.id));
+            
+            let importCount = 0;
+            let skipCount = 0;
+            
+            // 处理每条导入记录
+            for (const record of records) {
+              // 生成唯一ID（如果记录没有ID或者ID已存在）
+              let recordId = record.id;
+              if (!recordId || existingIds.has(recordId)) {
+                recordId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+              }
+              
+              // 构建要保存的记录
+              const recordToSave = {
+                ...record,
+                id: recordId,
+                // 确保必要字段存在
+                area: record.area || '未指定',
+                amount: record.amount || (record.price && record.quantity ? parseFloat(record.price) * parseFloat(record.quantity) : parseFloat(record.price) || 0)
+              };
+              
+              // 保存记录
+              const saved = await IndexedDBManager.saveRecord(recordToSave);
+              if (saved) {
+                importCount++;
+                existingIds.add(recordId); // 更新已存在ID集合
+              } else {
+                skipCount++;
+                console.warn('跳过无法保存的记录:', record.id);
+              }
+            }
+            
+            console.log(`数据导入完成：成功导入 ${importCount} 条记录，跳过 ${skipCount} 条记录`);
+            return importCount > 0;
+          }
+          return false;
+        } catch (e) {
+          console.error('导入数据失败:', e);
+          return false;
+        }
+      }
+    };
+    
+    // 支出记录控制器
+    const ExpenseController = {
+      // 添加支出记录
+      async addExpense(expenseData) {
+        return await DataManager.addRecord(expenseData);
+      },
+      
+      // 更新支出记录
+      async updateExpense(id, expenseData) {
+        return await DataManager.updateRecord(id, expenseData);
+      },
+      
+      // 删除支出记录
+      async deleteExpense(id) {
+        return await DataManager.deleteRecord(id);
+      },
+      
+      // 获取单个支出记录
+      async getExpense(id) {
+        return await DataManager.getRecord(id);
+      },
+      
+      // 获取所有支出记录
+      async getAllExpenses() {
+        return await DataManager.getAllRecords();
+      },
+      
+      // 过滤支出记录
+      async filterExpenses(filterCriteria) {
+        let expenses = await this.getAllExpenses();
+        
+        // 应用筛选条件
+        if (filterCriteria.category && filterCriteria.category !== 'all') {
+          expenses = expenses.filter(expense => expense.category === filterCriteria.category);
+        }
+        
+        if (filterCriteria.area && filterCriteria.area !== 'all') {
+          expenses = expenses.filter(expense => expense.area === filterCriteria.area);
+        }
+        
+        if (filterCriteria.status && filterCriteria.status !== 'all') {
+          expenses = expenses.filter(expense => expense.status === filterCriteria.status);
+        }
+        
+        if (filterCriteria.searchTerm) {
+          const searchTerm = filterCriteria.searchTerm.toLowerCase();
+          expenses = expenses.filter(expense => 
+            expense.name.toLowerCase().includes(searchTerm) || 
+            expense.brand.toLowerCase().includes(searchTerm) ||
+            expense.notes.toLowerCase().includes(searchTerm)
+          );
+        }
+        
+        return expenses;
+      },
+      
+      // 计算总支出
+      calculateTotal(expenses) {
+        return expenses.reduce((total, expense) => {
+          const price = parseFloat(expense.price) || 0;
+          const quantity = parseInt(expense.quantity) || 1;
+          return total + (price * quantity);
+        }, 0);
+      },
+      
+      // 按类别统计支出
+      async getCategoryStats() {
+        const expenses = await this.getAllExpenses();
+        const stats = {};
+        
+        expenses.forEach(expense => {
+          const category = expense.category || '其他';
+          const price = parseFloat(expense.price) || 0;
+          const quantity = parseInt(expense.quantity) || 1;
+          const total = price * quantity;
+          
+          stats[category] = (stats[category] || 0) + total;
+        });
+        
+        return stats;
+      },
+      
+      // 按区域统计支出
+      async getAreaStats() {
+        const expenses = await this.getAllExpenses();
+        const stats = {};
+        
+        expenses.forEach(expense => {
+          const area = expense.area || '其他';
+          const price = parseFloat(expense.price) || 0;
+          const quantity = parseInt(expense.quantity) || 1;
+          const total = price * quantity;
+          
+          stats[area] = (stats[area] || 0) + total;
+        });
+        
+        return stats;
+      }
+    };
+    
+    // UI控制器
+    const UIController = {
+      // 初始化UI
+      async init() {
+        this.setupEventListeners();
+        // 异步加载支出记录列表
+        await this.loadExpenseList();
+        this.setTodayDate();
+      },
+      
+      // 设置今天日期
+      setTodayDate() {
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0];
+        
+        if (document.getElementById('purchaseDate')) {
+          document.getElementById('purchaseDate').value = formattedDate;
+        }
+      },
+      
+      // 设置事件监听器
+      async setupEventListeners() {
+        // 初始化图片上传功能
+        this.initImageUpload();
+        
+        // 初始化饼图
+        await this.initChart();
+        
+        // 绑定表单提交事件
+        if (document.getElementById('expenseForm')) {
+          document.getElementById('expenseForm').addEventListener('submit', this.handleExpenseFormSubmit.bind(this));
+        }
+        
+        // 编辑表单提交事件
+        if (document.getElementById('editForm')) {
+          document.getElementById('editForm').addEventListener('submit', this.handleEditFormSubmit.bind(this));
+        }
+        
+        // 关闭编辑模态框
+        if (document.getElementById('closeEditModal')) {
+          document.getElementById('closeEditModal').addEventListener('click', this.closeEditModal.bind(this));
+        }
+        
+        if (document.getElementById('cancelEdit')) {
+          document.getElementById('cancelEdit').addEventListener('click', this.closeEditModal.bind(this));
+        }
+        
+        // 关闭删除确认模态框
+        if (document.getElementById('cancelDelete')) {
+          document.getElementById('cancelDelete').addEventListener('click', this.closeConfirmDeleteModal.bind(this));
+        }
+        
+        // 确认删除
+        if (document.getElementById('confirmDelete')) {
+          document.getElementById('confirmDelete').addEventListener('click', this.handleConfirmDelete.bind(this));
+        }
+        
+        // 关闭图片预览模态框
+        if (document.getElementById('closeImagePreview')) {
+          document.getElementById('closeImagePreview').addEventListener('click', this.closeImagePreviewModal.bind(this));
+        }
+        
+        // 绑定清空记录按钮
+        if (document.getElementById('clearAllRecords')) {
+          document.getElementById('clearAllRecords').addEventListener('click', this.openConfirmClearModal.bind(this));
+        }
+        
+        // 绑定清空记录确认按钮
+        if (document.getElementById('cancelClearAll')) {
+          document.getElementById('cancelClearAll').addEventListener('click', this.closeConfirmClearModal.bind(this));
+        }
+        
+        if (document.getElementById('confirmClearAll')) {
+          document.getElementById('confirmClearAll').addEventListener('click', this.handleConfirmClearAll.bind(this));
+        }
+        
+        // 筛选器变更事件
+        if (document.getElementById('categoryFilter')) {
+          document.getElementById('categoryFilter').addEventListener('change', this.handleFilterChange.bind(this));
+        }
+        
+        if (document.getElementById('areaFilter')) {
+          document.getElementById('areaFilter').addEventListener('change', this.handleFilterChange.bind(this));
+        }
+        
+        if (document.getElementById('statusFilter')) {
+          document.getElementById('statusFilter').addEventListener('change', this.handleFilterChange.bind(this));
+        }
+        
+        // 删除了重复的筛选框事件监听器
+        
+        // 搜索框输入事件
+        if (document.getElementById('searchInput')) {
+          document.getElementById('searchInput').addEventListener('input', this.handleSearchInput.bind(this));
+        }
+        
+        // 绑定文件导入/导出按钮事件
+        if (document.getElementById('exportData')) {
+          document.getElementById('exportData').addEventListener('click', () => {
+            if (DataManager.exportData()) {
+              this.showNotification('导出成功', 'success');
+            } else {
+              this.showNotification('导出失败', 'error');
+            }
+          });
+        }
+        
+        if (document.getElementById('importData')) {
+          document.getElementById('importData').addEventListener('click', () => {
+            // 显示提示信息，告知用户相关文件位置
+            console.log('提示：请选择之前导出的装修支出记录JSON文件');
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput) {
+              fileInput.click();
+            }
+          });
+        }
+        
+        if (document.getElementById('fileInput')) {
+          document.getElementById('fileInput').addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+              const file = e.target.files[0];
+              const reader = new FileReader();
+              
+              reader.onload = async (event) => {
+                    try {
+                      const jsonData = event.target.result;
+                      const result = await DataManager.importData(jsonData);
+                      
+                      if (result) {
+                        this.loadExpenseList();
+                        this.updateChart();
+                        // 重置文件输入以允许再次选择相同文件
+                        e.target.value = '';
+                        this.showNotification('数据导入成功！已添加到现有记录中。', 'success');
+                      } else {
+                        this.showNotification('数据导入失败，请检查文件格式！', 'error');
+                      }
+                    } catch (error) {
+                      this.showNotification('数据导入失败: ' + error.message, 'error');
+                    }
+              };
+              
+              reader.onerror = () => {
+                this.showNotification('文件读取失败！', 'error');
+              };
+              
+              reader.readAsText(file);
+            }
+          });
+        }
+      },
+      
+      // 处理表单提交
+      async handleExpenseFormSubmit(e) {
+        e.preventDefault();
+        
+        // 获取表单数据
+        const price = document.getElementById('price').value;
+        const quantity = document.getElementById('quantity').value;
+        const amount = price && quantity ? parseFloat(price) * parseFloat(quantity) : parseFloat(price) || 0;
+        
+        const expenseData = {
+          category: document.getElementById('category').value,
+          area: document.getElementById('area').value,
+          name: document.getElementById('name').value,
+          brand: document.getElementById('brand').value,
+          model: document.getElementById('model').value,
+          status: document.getElementById('status').value,
+          channel: document.getElementById('channel').value,
+          price: price,
+          quantity: quantity,
+          purchaseDate: document.getElementById('purchaseDate').value,
+          imageUrl: document.getElementById('imageUrl').value,
+          notes: document.getElementById('notes').value,
+          // 添加必要的字段用于数据验证和索引
+          amount: amount,
+          date: document.getElementById('purchaseDate').value,
+          createdAt: new Date().toISOString()
+        };
+        
+        // 增强验证
+        if (!expenseData.name || !expenseData.price || !expenseData.purchaseDate) {
+          this.showNotification('请填写项目名称、单价和购买日期', 'error');
+          return;
+        }
+        
+        try {
+          console.log('准备提交支出数据:', expenseData);
+          
+          // 添加支出记录
+          const newExpense = await ExpenseController.addExpense(expenseData);
+          if (newExpense) {
+            console.log('支出记录添加成功，ID:', newExpense.id);
+            
+            // 重置表单
+            document.getElementById('expenseForm').reset();
+            this.setTodayDate();
+            
+            // 重新加载列表
+            await this.loadExpenseList();
+            
+            // 更新图表
+            await this.updateChart();
+            
+            // 显示成功提示
+            this.showNotification('添加成功', 'success');
+          } else {
+            console.error('支出记录添加失败，返回为空');
+            this.showNotification('添加失败', 'error');
+          }
+        } catch (error) {
+          console.error('添加支出记录时出错:', error.stack || error);
+          this.showNotification('添加过程中发生错误', 'error');
+        }
+      },
+      
+      // 加载支出记录列表
+      async loadExpenseList(filterCriteria = {}) {
+        try {
+          const expenses = await ExpenseController.filterExpenses(filterCriteria);
+          const expenseList = document.getElementById('expenseList');
+          
+          if (!expenseList) return;
+          
+          // 清空列表
+          expenseList.innerHTML = '';
+          
+          // 计算总支出
+          const totalExpense = ExpenseController.calculateTotal(expenses);
+        
+        // 更新统计信息
+        const filterStats = document.getElementById('filterStats');
+        const filteredCount = document.getElementById('filteredCount');
+        const totalExpenseEl = document.getElementById('totalExpense');
+        
+        if (filterStats && filteredCount && totalExpenseEl) {
+          filterStats.classList.remove('hidden');
+          filteredCount.textContent = expenses.length;
+          totalExpenseEl.textContent = totalExpense.toFixed(2);
+        }
+        
+        // 如果没有记录，显示空状态
+        if (expenses.length === 0) {
+          const emptyRow = document.createElement('tr');
+          emptyRow.className = 'text-center table-row-animate';
+          emptyRow.innerHTML = `
+            <td colspan="13" class="px-3 py-8 text-neutral-400">
+              <i class="fa fa-folder-open-o text-2xl mb-2 block"></i>
+              ${filterCriteria.category || filterCriteria.area || filterCriteria.searchTerm ? '没有符合条件的记录' : '暂无记录，添加您的第一个装修项目吧'}
+            </td>
+          `;
+          expenseList.appendChild(emptyRow);
+          return;
+        }
+        
+        // 添加记录到列表
+        expenses.forEach(expense => {
+          const row = document.createElement('tr');
+          row.className = 'table-row-animate hover:bg-neutral-50';
+          
+          // 计算总价
+          const totalPrice = (parseFloat(expense.price) || 0) * (parseInt(expense.quantity) || 1);
+          
+          // 格式化日期
+          const formattedDate = expense.purchaseDate ? new Date(expense.purchaseDate).toLocaleDateString('zh-CN') : '';
+          
+          row.innerHTML = `
+            <td class="px-2 py-3 whitespace-nowrap">${expense.category}</td>
+            <td class="px-2 py-3 whitespace-nowrap">${expense.area}</td>
+            <td class="px-2 py-3">${expense.name}</td>
+            <td class="px-2 py-3 whitespace-nowrap">${expense.brand || '-'}</td>
+            <td class="px-2 py-3 whitespace-nowrap">${expense.model || '-'}</td>
+            <td class="px-2 py-3 whitespace-nowrap">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${this.getStatusBadgeClass(expense.status)}">
+                ${expense.status}
+              </span>
+            </td>
+            <td class="px-2 py-3 whitespace-nowrap">${expense.channel}</td>
+            <td class="px-2 py-3 whitespace-nowrap">¥${parseFloat(expense.price).toFixed(2)} / ${expense.quantity}</td>
+            <td class="px-2 py-3 whitespace-nowrap font-medium">¥${totalPrice.toFixed(2)}</td>
+            <td class="px-2 py-3 whitespace-nowrap">
+              ${expense.imageUrl ? `
+                <button class="text-primary hover:text-primary/80 preview-image-btn" data-image="${expense.imageUrl}">
+                  <i class="fa fa-image"></i>
+                </button>
+              ` : '-'}
+            </td>
+            <td class="px-2 py-3 max-w-[120px] truncate" title="${expense.notes || ''}">${expense.notes || '-'}</td>
+            <td class="px-2 py-3 whitespace-nowrap">
+              <div class="flex space-x-1">
+                <button class="p-1 text-neutral-600 hover:text-primary edit-btn" data-id="${expense.id}">
+                  <i class="fa fa-pencil"></i>
+                </button>
+                <button class="p-1 text-neutral-600 hover:text-danger delete-btn" data-id="${expense.id}">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          `;
+          
+          expenseList.appendChild(row);
+        });
+        
+        // 绑定行内按钮事件（添加调试输出）
+        const editButtons = document.querySelectorAll('.edit-btn');
+        console.log('找到的编辑按钮数量:', editButtons.length);
+        
+        editButtons.forEach(btn => {
+          console.log('编辑按钮ID属性:', btn.dataset.id);
+          
+          // 直接将ID绑定到按钮的自定义属性
+          btn.setAttribute('data-expense-id', btn.dataset.id);
+          
+          btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            console.log('编辑按钮被点击！');
+            
+            // 获取ID
+            const id = this.dataset.id || this.getAttribute('data-expense-id') || e.currentTarget.dataset.id;
+            console.log('编辑记录ID:', id);
+            
+            // 直接设置编辑表单的ID字段（如果有ID的话）
+            const editIdInput = document.getElementById('editId');
+            if (editIdInput) {
+              editIdInput.value = id || '';
+            }
+            
+            // 直接显示模态框 - 不依赖复杂的控制器调用
+            try {
+              // 首先尝试使用控制器方法（如果可用）
+              if (window.UIController && typeof window.UIController.openEditModal === 'function') {
+                try {
+                  await window.UIController.openEditModal(id);
+                  console.log('通过UIController.openEditModal显示模态框');
+                  return;
+                } catch (ctrlError) {
+                  console.warn('UIController.openEditModal调用失败，将直接显示模态框:', ctrlError);
+                }
+              }
+              
+              // 备用方案：直接显示模态框
+              console.log('使用备用方案直接显示编辑模态框');
+              const modal = document.getElementById('editModal');
+              const modalContent = document.getElementById('editModalContent');
+              
+              if (modal && modalContent) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                  modal.classList.add('opacity-100');
+                  modalContent.classList.remove('scale-95', 'opacity-0');
+                  modalContent.classList.add('scale-100', 'opacity-100');
+                  console.log('编辑模态框显示成功');
+                }, 10);
+              } else {
+                console.error('未找到编辑模态框元素');
+              }
+            } catch (error) {
+              console.error('显示编辑模态框失败:', error);
+            }
+          });
+        });
+        
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            // 获取按钮元素（即使点击的是内部图标）
+            const button = e.target.closest('.delete-btn');
+            if (button && button.dataset.id) {
+              this.openConfirmDeleteModal(button.dataset.id);
+            }
+          });
+        });
+        
+        document.querySelectorAll('.preview-image-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            // 获取按钮元素（即使点击的是内部图标）
+            const button = e.target.closest('.preview-image-btn');
+            if (button && button.dataset.image) {
+              this.openImagePreviewModal(button.dataset.image);
+            }
+          });
+        });
+        
+        // 更新饼图
+        if (typeof this.updateChart === 'function') {
+          await this.updateChart();
+        }
+      } catch (error) {
+          console.error('加载支出记录失败:', error);
+          // 显示错误信息
+          const expenseList = document.getElementById('expenseList');
+          if (expenseList) {
+            expenseList.innerHTML = `
+              <tr class="text-center table-row-animate">
+                <td colspan="12" class="px-3 py-8 text-danger">
+                  <i class="fa fa-exclamation-circle text-2xl mb-2 block"></i>
+                  加载记录失败，请刷新页面重试
+                </td>
+              </tr>
+            `;
+          }
+        }
+      },
+      
+      // 根据状态获取标签样式类
+      getStatusBadgeClass(status) {
+        switch (status) {
+          case '已下单':
+            return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+          case '已到货':
+            return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
+          case '已安装':
+            return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+          case '已验收':
+            return 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200';
+          case '已退货':
+            return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+          default:
+            return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+        }
+      },
+      
+      // 打开编辑模态框
+      async openEditModal(id) {
+        console.log('openEditModal被调用，参数ID:', id);
+        
+        try {
+          // 1. 首先设置ID
+          if (id) {
+            document.getElementById('editId').value = id;
+          }
+          
+          // 2. 尝试加载数据（但不阻塞模态框显示）
+          try {
+            let expense = null;
+            
+            // 尝试从ExpenseController获取数据
+            if (typeof ExpenseController !== 'undefined' && typeof ExpenseController.getExpense === 'function') {
+              try {
+                expense = await ExpenseController.getExpense(id);
+                console.log('通过ExpenseController获取数据成功:', !!expense);
+              } catch (ctrlError) {
+                console.warn('ExpenseController.getExpense调用失败:', ctrlError);
+              }
+            }
+            
+            // 如果没有获取到数据，尝试从localStorage获取
+            if (!expense && id) {
+              const allRecords = JSON.parse(localStorage.getItem('decoration_expenses') || '[]');
+              expense = allRecords.find(record => record.id === id);
+              console.log('从localStorage获取数据:', !!expense);
+            }
+            
+            // 如果有数据，填充表单
+            if (expense) {
+              console.log('开始填充表单数据，记录ID:', id);
+              console.log('记录中是否包含备注:', expense.hasOwnProperty('notes'), '备注内容:', expense.notes);
+              
+              // 保存备注内容和完整expense对象，用于稍后在模态框动画完成后设置
+              window.tempEditExpense = expense; // 保存在全局变量中，确保setTimeout可以访问
+              const savedNotes = expense.notes || '';
+              
+              // 安全地填充基本字段，先检查元素是否存在
+              const fieldsToFill = [
+                { id: 'editCategory', value: expense.category },
+                { id: 'editArea', value: expense.area },
+                { id: 'editName', value: expense.name },
+                { id: 'editBrand', value: expense.brand },
+                { id: 'editModel', value: expense.model },
+                { id: 'editStatus', value: expense.status },
+                { id: 'editChannel', value: expense.channel },
+                { id: 'editPrice', value: expense.price },
+                { id: 'editQuantity', value: expense.quantity || '1' },
+                { id: 'editPurchaseDate', value: expense.purchaseDate },
+                { id: 'editImageUrl', value: expense.imageUrl },
+                { id: 'editId', value: id } // 确保设置ID字段
+              ];
+              
+              // 循环填充字段，安全地处理每个元素
+              fieldsToFill.forEach(field => {
+              try {
+                const element = document.getElementById(field.id);
+                if (element) {
+                  element.value = field.value || '';
+                  console.log(`成功设置字段 ${field.id}:`, field.value || '空');
+                  
+                  // 如果是图片URL字段并且有值，显示删除按钮
+                  if (field.id === 'editImageUrl' && field.value) {
+                    const editImagePreviewText = document.getElementById('editImagePreviewText');
+                    const deleteEditImageButton = document.getElementById('deleteEditImageButton');
+                    if (editImagePreviewText) {
+                      editImagePreviewText.textContent = '已加载现有图片';
+                      editImagePreviewText.classList.remove('hidden');
+                    }
+                    if (deleteEditImageButton) {
+                      deleteEditImageButton.classList.remove('hidden');
+                    }
+                  }
+                } else {
+                  console.warn(`字段元素不存在: ${field.id}`);
+                }
+              } catch (e) {
+                console.error(`设置字段 ${field.id} 时出错:`, e);
+              }
+            });
+              
+              // 在模态框显示之前，先尝试获取并设置一次备注
+              try {
+                const editNotesElement = document.getElementById('editNotes');
+                if (editNotesElement) {
+                  editNotesElement.value = savedNotes;
+                  console.log('模态框显示前备注项已设置:', savedNotes);
+                } else {
+                  console.warn('模态框显示前未找到备注输入框元素');
+                }
+              } catch (e) {
+                console.error('设置备注内容时出错:', e);
+              }
+              
+              // 添加调试日志，查看完整加载的数据
+              console.log('加载的完整记录数据:', expense);
+            } else {
+              // 没有数据时重置表单
+              try {
+                const editForm = document.getElementById('editForm');
+                if (editForm) {
+                  editForm.reset();
+                }
+                if (id) {
+                  const editIdElement = document.getElementById('editId');
+                  if (editIdElement) {
+                    editIdElement.value = id;
+                  }
+                }
+              } catch (e) {
+                console.error('重置表单时出错:', e);
+              }
+            }
+          } catch (dataError) {
+            console.error('加载数据时出错:', dataError);
+            // 出错时仍然显示模态框
+          }
+          
+          // 3. 无论数据加载是否成功，都显示模态框
+          const modal = document.getElementById('editModal');
+          const modalContent = document.getElementById('editModalContent');
+          
+          if (modal && modalContent) {
+            console.log('显示编辑模态框...');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+              modal.classList.add('opacity-100');
+              modalContent.classList.remove('scale-95', 'opacity-0');
+              modalContent.classList.add('scale-100', 'opacity-100');
+              console.log('模态框显示动画完成');
+              
+              // 模态框动画完成后，再次设置备注内容，确保覆盖可能的表单重置
+              // 使用window.tempEditExpense确保可以访问到expense对象
+              try {
+                const expenseData = window.tempEditExpense;
+                console.log('模态框动画完成后，尝试访问expense数据:', !!expenseData);
+                
+                if (expenseData) {
+                  const editNotesElement = document.getElementById('editNotes');
+                  if (editNotesElement) {
+                    editNotesElement.value = expenseData.notes || '';
+                    console.log('模态框动画完成后备注项已设置:', expenseData.notes || '空备注');
+                    // 强制更新UI
+                    editNotesElement.focus();
+                    editNotesElement.blur();
+                  } else {
+                    console.error('模态框动画完成后未找到备注输入框元素');
+                  }
+                } else {
+                  console.warn('模态框动画完成后，但没有找到expense数据');
+                }
+              } catch (e) {
+                console.error('模态框动画完成后设置备注内容时出错:', e);
+              }
+            }, 10);
+          } else {
+            console.error('未找到模态框元素');
+          }
+        } catch (error) {
+          console.error('打开编辑模态框失败:', error);
+          if (this.showNotification) {
+            this.showNotification('打开编辑窗口失败', 'error');
+          }
+        }
+      },
+      
+      // 关闭编辑模态框
+      closeEditModal() {
+        const modal = document.getElementById('editModal');
+        const modalContent = document.getElementById('editModalContent');
+        
+        if (modal && modalContent) {
+          modal.classList.remove('opacity-100');
+          modalContent.classList.remove('scale-100', 'opacity-100');
+          modalContent.classList.add('scale-95', 'opacity-0');
+          
+          setTimeout(() => {
+            modal.classList.add('hidden');
+          }, 300);
+        }
+      },
+      
+      // 处理编辑表单提交
+      async handleEditFormSubmit(e) {
+        e.preventDefault();
+        
+        const id = document.getElementById('editId').value;
+        
+        // 获取表单数据
+          // 确保所有字段都能被正确获取和处理，特别是备注字段
+          const editNotesElement = document.getElementById('editNotes');
+          const notesValue = editNotesElement ? editNotesElement.value : '';
+          console.log('处理备注字段:', notesValue);
+          
+          const updatedData = {
+            category: document.getElementById('editCategory').value,
+            area: document.getElementById('editArea').value,
+            name: document.getElementById('editName').value,
+            brand: document.getElementById('editBrand').value,
+            model: document.getElementById('editModel').value,
+            status: document.getElementById('editStatus').value,
+            channel: document.getElementById('editChannel').value,
+            price: document.getElementById('editPrice').value,
+            quantity: document.getElementById('editQuantity').value,
+            purchaseDate: document.getElementById('editPurchaseDate').value,
+            imageUrl: document.getElementById('editImageUrl').value,
+            notes: notesValue,
+            updatedAt: new Date().toISOString()
+          };
+        
+        // 简单验证
+        if (!updatedData.name || !updatedData.price) {
+          alert('请填写项目名称和单价');
+          return;
+        }
+        
+        try {
+          // 更新记录
+          const success = await ExpenseController.updateExpense(id, updatedData);
+          if (success) {
+            this.closeEditModal();
+            await this.loadExpenseList(this.getCurrentFilterCriteria());
+            
+            // 更新图表
+            this.updateChart();
+            
+            this.showNotification('更新成功', 'success');
+          } else {
+            this.showNotification('更新失败', 'error');
+          }
+        } catch (error) {
+          console.error('更新支出记录时出错:', error);
+          this.showNotification('更新过程中发生错误', 'error');
+        }
+      },
+      
+      // 打开删除确认模态框
+      openConfirmDeleteModal(id) {
+        document.getElementById('confirmDelete').dataset.id = id;
+        
+        const modal = document.getElementById('confirmDeleteModal');
+        const modalContent = document.getElementById('confirmDeleteModalContent');
+        
+        if (modal && modalContent) {
+          modal.classList.remove('hidden');
+          setTimeout(() => {
+            modal.classList.add('opacity-100');
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+          }, 10);
+        }
+      },
+      
+      // 关闭删除确认模态框
+      closeConfirmDeleteModal() {
+        const modal = document.getElementById('confirmDeleteModal');
+        const modalContent = document.getElementById('confirmDeleteModalContent');
+        
+        if (modal && modalContent) {
+          modal.classList.remove('opacity-100');
+          modalContent.classList.remove('scale-100', 'opacity-100');
+          modalContent.classList.add('scale-95', 'opacity-0');
+          
+          setTimeout(() => {
+            modal.classList.add('hidden');
+          }, 300);
+        }
+      },
+      
+      // 处理确认删除
+      async handleConfirmDelete() {
+        const id = document.getElementById('confirmDelete').dataset.id;
+        
+        try {
+          const success = await ExpenseController.deleteExpense(id);
+          if (success) {
+            this.closeConfirmDeleteModal();
+            await this.loadExpenseList(this.getCurrentFilterCriteria());
+            
+            // 更新图表
+            this.updateChart();
+            
+            this.showNotification('删除成功', 'success');
+          } else {
+            this.showNotification('删除失败', 'error');
+          }
+        } catch (error) {
+          console.error('删除支出记录时出错:', error);
+          this.showNotification('删除过程中发生错误', 'error');
+        }
+      },
+      
+      // 打开清空记录确认模态框
+      openConfirmClearModal() {
+        const modal = document.getElementById('confirmClearModal');
+        const modalContent = document.getElementById('confirmClearModalContent');
+        
+        if (modal && modalContent) {
+          modal.classList.remove('hidden');
+          setTimeout(() => {
+            modal.classList.add('opacity-100');
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+          }, 10);
+        }
+      },
+      
+      // 关闭清空记录确认模态框
+      closeConfirmClearModal() {
+        const modal = document.getElementById('confirmClearModal');
+        const modalContent = document.getElementById('confirmClearModalContent');
+        
+        if (modal && modalContent) {
+          modal.classList.remove('opacity-100');
+          modalContent.classList.remove('scale-100', 'opacity-100');
+          modalContent.classList.add('scale-95', 'opacity-0');
+          
+          setTimeout(() => {
+            modal.classList.add('hidden');
+          }, 300);
+        }
+      },
+      
+      // 处理确认清空所有记录
+      async handleConfirmClearAll() {
+        try {
+          const success = await IndexedDBManager.clearAllRecords();
+          if (success) {
+            this.closeConfirmClearModal();
+            await this.loadExpenseList(this.getCurrentFilterCriteria());
+            
+            // 更新图表
+            this.updateChart();
+            
+            this.showNotification('所有记录已清空', 'success');
+          } else {
+            this.showNotification('清空记录失败', 'error');
+          }
+        } catch (error) {
+          console.error('清空记录时出错:', error);
+          this.showNotification('清空过程中发生错误', 'error');
+        }
+      },
+      
+      // 打开图片预览模态框
+      openImagePreviewModal(imageUrl) {
+        document.getElementById('previewImage').src = imageUrl;
+        
+        const modal = document.getElementById('imagePreviewModal');
+        
+        if (modal) {
+          modal.classList.remove('hidden');
+          setTimeout(() => {
+            modal.classList.add('opacity-100');
+          }, 10);
+        }
+      },
+      
+      // 关闭图片预览模态框
+      closeImagePreviewModal() {
+        const modal = document.getElementById('imagePreviewModal');
+        
+        if (modal) {
+          modal.classList.remove('opacity-100');
+          setTimeout(() => {
+            modal.classList.add('hidden');
+            document.getElementById('previewImage').src = '';
+          }, 300);
+        }
+      },
+      
+      // 处理筛选器变更
+      handleFilterChange() {
+        this.loadExpenseList(this.getCurrentFilterCriteria());
+      },
+      
+      // 处理搜索输入
+      handleSearchInput(e) {
+        const searchTerm = e.target.value;
+        this.loadExpenseList({
+          ...this.getCurrentFilterCriteria(),
+          searchTerm
+        });
+      },
+      
+      // 初始化图片上传功能
+          initImageUpload() {
+            // 处理主表单图片上传
+            const imageUploadArea = document.getElementById('imageUploadArea');
+            const imageFileInput = document.getElementById('imageInput');
+            const imageUrl = document.getElementById('imageUrl');
+            const imagePreviewText = document.getElementById('imagePreviewText');
+            const selectImageButton = document.getElementById('selectImageButton');
+            const deleteImageButton = document.getElementById('deleteImageButton');
+            
+            if (imageUploadArea && imageFileInput && selectImageButton) {
+              // 使上传区域可聚焦，以便粘贴图片
+              imageUploadArea.setAttribute('tabindex', '0');
+              imageUploadArea.setAttribute('aria-label', '图片粘贴区域，点击后按Ctrl+V粘贴图片');
+              
+              // 添加视觉提示
+              imageUploadArea.addEventListener('focus', () => {
+                imageUploadArea.classList.add('ring-2', 'ring-primary', 'ring-opacity-50');
+              });
+              
+              imageUploadArea.addEventListener('blur', () => {
+                imageUploadArea.classList.remove('ring-2', 'ring-primary', 'ring-opacity-50');
+              });
+              
+              // 选择文件按钮点击事件
+              selectImageButton.addEventListener('click', () => {
+                imageFileInput.click();
+              });
+              
+              // 处理文件选择
+              imageFileInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                  this.handleImageFile(e.target.files[0], imageUrl, imagePreviewText);
+                }
+              });
+              
+              // 处理粘贴事件
+              imageUploadArea.addEventListener('paste', (e) => {
+                const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+                for (let index in items) {
+                  const item = items[index];
+                  if (item.kind === 'file' && item.type.includes('image')) {
+                    const file = item.getAsFile();
+                    this.handleImageFile(file, imageUrl, imagePreviewText);
+                    break;
+                  }
+                }
+              });
+              
+              // 绑定删除图片按钮事件
+              if (deleteImageButton) {
+                deleteImageButton.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  this.deleteImage('imageUrl', 'imagePreviewText', 'deleteImageButton');
+                });
+              }
+            }
+        
+        // 处理编辑表单图片上传
+          const editImageUploadArea = document.getElementById('editImageUploadArea');
+          const editImageFileInput = document.getElementById('editImageInput');
+          const editImageUrl = document.getElementById('editImageUrl');
+          const editImagePreviewText = document.getElementById('editImagePreviewText');
+          const editSelectImageButton = document.getElementById('editSelectImageButton');
+          const deleteEditImageButton = document.getElementById('deleteEditImageButton');
+          
+          if (editImageUploadArea && editImageFileInput && editSelectImageButton) {
+            // 使上传区域可聚焦，以便粘贴图片
+            editImageUploadArea.setAttribute('tabindex', '0');
+            editImageUploadArea.setAttribute('aria-label', '图片粘贴区域，点击后按Ctrl+V粘贴图片');
+            
+            // 添加视觉提示
+            editImageUploadArea.addEventListener('focus', () => {
+              editImageUploadArea.classList.add('ring-2', 'ring-primary', 'ring-opacity-50');
+            });
+            
+            editImageUploadArea.addEventListener('blur', () => {
+              editImageUploadArea.classList.remove('ring-2', 'ring-primary', 'ring-opacity-50');
+            });
+            
+            // 选择文件按钮点击事件
+            editSelectImageButton.addEventListener('click', () => {
+              editImageFileInput.click();
+            });
+            
+            // 处理文件选择
+            editImageFileInput.addEventListener('change', (e) => {
+              if (e.target.files && e.target.files[0]) {
+                this.handleImageFile(e.target.files[0], editImageUrl, editImagePreviewText);
+              }
+            });
+            
+            // 处理粘贴事件
+            editImageUploadArea.addEventListener('paste', (e) => {
+              const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+              for (let index in items) {
+                const item = items[index];
+                if (item.kind === 'file' && item.type.includes('image')) {
+                  const file = item.getAsFile();
+                  this.handleImageFile(file, editImageUrl, editImagePreviewText);
+                  break;
+                }
+              }
+            });
+            
+            // 绑定删除图片按钮事件
+            if (deleteEditImageButton) {
+              deleteEditImageButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.deleteImage('editImageUrl', 'editImagePreviewText', 'deleteEditImageButton');
+              });
+            }
+          }
+      },
+      
+      // 处理图片文件
+          handleImageFile(file, urlInput, previewTextElement) {
+            // 创建文件阅读器
+            const reader = new FileReader();
+            
+            reader.onload = (event) => {
+              // 将图片转换为Base64格式存储
+              const base64Data = event.target.result;
+              
+              // 设置隐藏输入框的值
+              if (urlInput) {
+                urlInput.value = base64Data;
+              }
+              
+              // 显示图片已添加提示
+              if (previewTextElement) {
+                previewTextElement.textContent = `已选择图片: ${file.name}`;
+                previewTextElement.classList.remove('hidden');
+              }
+              
+              // 显示删除按钮
+              if (urlInput.id === 'imageUrl') {
+                document.getElementById('deleteImageButton').classList.remove('hidden');
+              } else if (urlInput.id === 'editImageUrl') {
+                document.getElementById('deleteEditImageButton').classList.remove('hidden');
+              }
+            };
+            
+            // 读取文件为DataURL
+            reader.readAsDataURL(file);
+          },
+          
+          // 删除图片
+          deleteImage(imageInputId, previewTextId, deleteButtonId) {
+            const imageInput = document.getElementById(imageInputId);
+            const previewText = document.getElementById(previewTextId);
+            const deleteButton = document.getElementById(deleteButtonId);
+            
+            if (imageInput) {
+              imageInput.value = '';
+            }
+            
+            if (previewText) {
+              previewText.classList.add('hidden');
+            }
+            
+            if (deleteButton) {
+              deleteButton.classList.add('hidden');
+            }
+          },
+      
+      // 初始化饼图
+      async initChart() {
+        // 绑定图表类型切换事件
+        const categoryChartBtn = document.getElementById('categoryChartBtn');
+        const areaChartBtn = document.getElementById('areaChartBtn');
+        
+        if (categoryChartBtn && areaChartBtn) {
+          categoryChartBtn.addEventListener('click', async () => {
+            categoryChartBtn.classList.add('bg-primary', 'text-white');
+            categoryChartBtn.classList.remove('bg-neutral-100', 'text-neutral-600');
+            areaChartBtn.classList.add('bg-neutral-100', 'text-neutral-600');
+            areaChartBtn.classList.remove('bg-primary', 'text-white');
+            await this.updateChart('category');
+          });
+          
+          areaChartBtn.addEventListener('click', async () => {
+            areaChartBtn.classList.add('bg-primary', 'text-white');
+            areaChartBtn.classList.remove('bg-neutral-100', 'text-neutral-600');
+            categoryChartBtn.classList.add('bg-neutral-100', 'text-neutral-600');
+            categoryChartBtn.classList.remove('bg-primary', 'text-white');
+            await this.updateChart('area');
+          });
+        }
+        
+        // 默认显示类别统计
+        await this.updateChart('category');
+      },
+      
+      // 更新图表
+      async updateChart(type = 'category') {
+        const ctx = document.getElementById('expenseChart');
+        const totalAmountElement = document.getElementById('totalExpenseAmount');
+        const chartLegendElement = document.getElementById('chartLegend');
+        
+        if (!ctx || !totalAmountElement || !chartLegendElement) return;
+        
+        try {
+          // 获取统计数据
+          const stats = type === 'category' ? 
+            await ExpenseController.getCategoryStats() : 
+            await ExpenseController.getAreaStats();
+        
+        // 准备图表数据
+        const labels = Object.keys(stats);
+        const data = Object.values(stats);
+        const backgroundColor = [
+          '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+          '#FF9F40', '#8AC249', '#EA5F89', '#00C8B3', '#6C757D',
+          '#FF6B6B', '#4ECDC4', '#FFD166', '#6A0572', '#AB83A1'
+        ];
+        
+        // 计算总支出
+        const totalAmount = data.reduce((sum, amount) => sum + amount, 0);
+        totalAmountElement.textContent = `¥${totalAmount.toFixed(2)}`;
+        
+        // 销毁旧图表
+        if (this.chartInstance) {
+          this.chartInstance.destroy();
+        }
+        
+        // 创建新图表
+        this.chartInstance = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: data,
+              backgroundColor: backgroundColor.slice(0, labels.length),
+              borderWidth: 2,
+              borderColor: '#fff'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const label = context.label || '';
+                    const value = context.parsed;
+                    const percentage = ((value / totalAmount) * 100).toFixed(1);
+                    return `${label}: ¥${value.toFixed(2)} (${percentage}%)`;
+                  }
+                }
+              }
+            }
+          }
+        });
+        
+          // 更新图例
+          this.updateChartLegend(labels, data, backgroundColor, totalAmount);
+        } catch (error) {
+          console.error('更新图表失败:', error);
+          // 显示空状态
+          totalAmountElement.textContent = '¥0.00';
+          chartLegendElement.innerHTML = '<div class="text-center text-neutral-400 py-4">暂无数据显示</div>';
+        }
+      },
+      
+      // 更新图表图例
+      updateChartLegend(labels, data, backgroundColor, totalAmount) {
+        const chartLegendElement = document.getElementById('chartLegend');
+        if (!chartLegendElement) return;
+        
+        let legendHtml = '';
+        for (let i = 0; i < labels.length; i++) {
+          const percentage = ((data[i] / totalAmount) * 100).toFixed(1);
+          legendHtml += `
+            <div class="flex items-center mb-1">
+              <div class="w-3 h-3 rounded-full mr-2" style="background-color: ${backgroundColor[i]}"></div>
+              <span class="text-sm flex-1 truncate">${labels[i]}</span>
+              <span class="text-sm text-right">¥${data[i].toFixed(2)}</span>
+            </div>
+          `;
+        }
+        
+        chartLegendElement.innerHTML = legendHtml;
+      },
+      
+      // 获取当前筛选条件
+      getCurrentFilterCriteria() {
+        const categoryFilter = document.getElementById('categoryFilter');
+        const areaFilter = document.getElementById('areaFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const searchInput = document.getElementById('searchInput');
+        
+        // 获取类别筛选条件
+        let category = 'all';
+        if (categoryFilter) {
+          category = categoryFilter.value;
+        }
+        
+        // 获取区域筛选条件
+        let area = 'all';
+        if (areaFilter) {
+          area = areaFilter.value;
+        }
+        
+        // 获取状态筛选条件
+        let status = 'all';
+        if (statusFilter) {
+          status = statusFilter.value;
+        }
+        
+        // 获取搜索关键词
+        const searchTerm = searchInput ? searchInput.value : '';
+        
+        return {
+          category,
+          area,
+          status,
+          searchTerm
+        };
+      },
+      
+      // 显示通知
+      showNotification(message, type = 'info') {
+        // 减少不必要的通知，默认只在控制台显示
+        console.log(`[装修管家] ${message}`);
+        
+        // 只对重要操作（导入/导出）显示实际通知
+        const importantActions = ['导出成功', '导出失败', '数据导入成功', '数据导入失败'];
+        const shouldShowNotification = importantActions.some(action => message.includes(action));
+        
+        if (shouldShowNotification && 'Notification' in window) {
+          // 请求通知权限
+          if (Notification.permission === 'granted') {
+            new Notification('装修管家', {
+              body: message,
+              icon: 'data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%234f46e5\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpath d=\'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\'/%3e%3cpolyline points=\'9 22 9 12 15 12 15 22\'/%3e%3c/svg%3e',
+              tag: 'decoration-app'
+            });
+          }
+        }
+      }
+    };
+    
+    // 当DOM加载完成后初始化应用
+    document.addEventListener('DOMContentLoaded', async function() {
+      // 设置默认日期为今天
+      const today = new Date();
+      const formattedDate = today.toISOString().split('T')[0];
+      
+      if (document.getElementById('purchaseDate')) {
+        document.getElementById('purchaseDate').value = formattedDate;
+      }
+      
+      // 初始化UI控制器
+      if (typeof UIController !== 'undefined') {
+        // 将UIController暴露到全局作用域，便于调试
+        window.UIController = UIController;
+        // 异步初始化UI
+        await UIController.init();
+      }
+    });
+  </script>
+</body>
+</html>
