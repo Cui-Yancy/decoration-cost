@@ -5,83 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>装修管家 - 注意事项</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/shared.css">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#4f46e5', // 主色调 - 紫色
-            secondary: '#8b5cf6', // 辅助色 - 浅紫色
-            success: '#10b981', // 成功色 - 绿色
-            warning: '#f59e0b', // 警告色 - 黄色
-            danger: '#ef4444', // 危险色 - 红色
-            neutral: {
-              50: '#f9fafb',
-              100: '#f3f4f6',
-              200: '#e5e7eb',
-              300: '#d1d5db',
-              400: '#9ca3af',
-              500: '#6b7280',
-              600: '#4b5563',
-              700: '#374151',
-              800: '#1f2937',
-              900: '#111827',
-            }
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-          },
-        },
-      }
-    }
-  </script>
-  <style type="text/tailwindcss">
-    @layer utilities {
-      /* 自定义工具类 */
-      .content-auto { content-visibility: auto; }
-      .card-shadow {
-        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      }
-      .card-hover {
-        transition: transform 0.2s, box-shadow 0.2s;
-      }
-      .card-hover:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      }
-      .hover-lift {
-        transition: transform 0.2s, box-shadow 0.2s;
-      }
-      .hover-lift:hover {
-        transform: translateY(-1px);
-      }
-      .table-row-animate {
-        transition: all 0.3s;
-      }
-      .nowrap-header {
-        white-space: nowrap;
-      }
-      .input-focus:focus {
-        outline: none;
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-      }
-      .module-container {
-        transition: all 0.3s ease;
-      }
-      
-      /* 解决点击页面时内容区域出现闪烁光标的问题 */
-      .no-select {
-        user-select: none;
-      }
-      
-      /* 保持表单元素的正常选择和编辑功能 */
-      .allow-select {
-        user-select: auto;
-      }
-    }
-  </style>
+  <script src="js/shared-config.js"></script>
 </head>
 <body class="bg-neutral-50 text-neutral-800 min-h-screen no-select">
   <div class="flex flex-col min-h-screen">
@@ -92,10 +18,10 @@
           <i class="fa fa-home text-primary text-2xl"></i>
           <h1 class="text-xl font-bold text-neutral-800">装修管家</h1>
         </div>
-        
+
         <div class="flex items-center space-x-4">
-          <a href="支出记录.html" class="px-4 py-2 rounded-lg bg-white text-primary border border-primary font-medium hover:bg-primary/5 transition-colors">支出记录</a>
-          <a href="注意事项.html" class="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors">注意事项</a>
+          <a href="cost.html" class="px-4 py-2 rounded-lg bg-white text-primary border border-primary font-medium hover:bg-primary/5 transition-colors">支出记录</a>
+          <a href="note.html" class="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors">注意事项</a>
           <button class="text-neutral-500 hover:text-neutral-700 p-2 rounded-full hover:bg-neutral-100 transition-colors">
             <i class="fa fa-question-circle"></i>
           </button>
@@ -114,14 +40,14 @@
               <h2 class="text-lg md:text-xl font-semibold mb-4 flex items-center text-neutral-700">
                 <i class="fa fa-plus-circle text-primary mr-2"></i>添加注意事项
               </h2>
-              
+
               <form id="noteForm" class="space-y-4">
                 <div>
                   <label for="noteTitle" class="block text-sm font-medium text-neutral-600 mb-1">主题</label>
-                  <input type="text" id="noteTitle" placeholder="请输入注意事项主题" 
+                  <input type="text" id="noteTitle" placeholder="请输入注意事项主题"
                     class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
                 </div>
-                
+
                 <div>
                   <label for="notePhase" class="block text-sm font-medium text-neutral-600 mb-1">装修阶段</label>
                   <select id="notePhase" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
@@ -137,7 +63,7 @@
                     <option value="其他">其他</option>
                   </select>
                 </div>
-                
+
                 <div>
                   <label for="noteStatus" class="block text-sm font-medium text-neutral-600 mb-1">状态</label>
                   <select id="noteStatus" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
@@ -147,7 +73,7 @@
                     <option value="已取消">已取消</option>
                   </select>
                 </div>
-                
+
                 <div>
                   <label for="noteLocation" class="block text-sm font-medium text-neutral-600 mb-1">区域</label>
                   <select id="noteLocation" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
@@ -163,7 +89,7 @@
                     <option value="其他">其他</option>
                   </select>
                 </div>
-                
+
                 <div>
                   <label for="notePriority" class="block text-sm font-medium text-neutral-600 mb-1">优先级</label>
                   <select id="notePriority" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
@@ -173,38 +99,38 @@
                     <option value="紧急">紧急</option>
                   </select>
                 </div>
-                
+
                 <div>
                   <label for="noteDescription" class="block text-sm font-medium text-neutral-600 mb-1">详述</label>
                   <textarea id="noteDescription" rows="4" placeholder="请输入详细描述..."
                     class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all"></textarea>
                 </div>
-                
+
                 <div>
                   <label for="noteDate" class="block text-sm font-medium text-neutral-600 mb-1">记录日期</label>
-                  <input type="date" id="noteDate" 
+                  <input type="date" id="noteDate"
                     class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
                 </div>
-                
-                <!-- 图片上传区域 -->
+
                 <div>
                   <label class="block text-sm font-medium text-neutral-600 mb-1">图片（选择文件或粘贴）</label>
                   <div class="flex gap-2">
                     <button type="button" id="selectImageButton" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center whitespace-nowrap">
                       <i class="fa fa-upload mr-2"></i>选择图片文件
                     </button>
-                    
-                    <div id="imageUploadArea" class="flex-1 border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center bg-neutral-50 cursor-text hover:border-primary transition-colors">
+                    <div id="imageUploadArea" class="flex-1 border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center bg-neutral-50 cursor-text hover:border-primary transition-colors relative">
                       <input type="file" id="imageInput" accept="image/*" class="hidden">
-                      
                       <i class="fa fa-paste text-neutral-400 text-xl mb-2"></i>
                       <p class="text-sm text-neutral-500">点击或按Ctrl+V粘贴图片</p>
                       <p id="imagePreviewText" class="text-xs text-neutral-400 mt-1 hidden">图片已添加</p>
+                      <button id="deleteImageButton" class="absolute top-2 right-2 text-neutral-500 hover:text-danger p-1 rounded-full hover:bg-neutral-100 transition-colors hidden">
+                        <i class="fa fa-times"></i>
+                      </button>
                     </div>
                   </div>
                   <input type="hidden" id="imageUrl" value="">
                 </div>
-                
+
                 <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2.5 px-4 rounded-lg transition-all flex items-center justify-center transform hover:translate-y-[-1px] active:translate-y-0 shadow-md hover:shadow-lg">
                   <i class="fa fa-save mr-2"></i>保存记录
                 </button>
@@ -214,15 +140,13 @@
 
           <!-- 右侧：注意事项列表 -->
           <div class="lg:col-span-9">
-            <!-- 注意事项列表 -->
             <div class="bg-white rounded-xl p-5 card-shadow hover-lift transition-all duration-300 hover:shadow-lg">
               <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
                 <h2 class="text-lg md:text-xl font-semibold flex items-center text-neutral-700">
                   <i class="fa fa-list-alt text-primary mr-2"></i>注意事项总览
                 </h2>
-                
+
                 <div class="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
-                  <!-- 状态筛选 -->
                   <div class="relative w-full sm:w-auto">
                     <select id="statusFilter" class="w-full sm:w-auto px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all">
                       <option value="all">全部状态</option>
@@ -232,8 +156,7 @@
                       <option value="已取消">已取消</option>
                     </select>
                   </div>
-                  
-                  <!-- 装修阶段筛选 -->
+
                   <div class="relative w-full sm:w-auto">
                     <select id="phaseFilter" class="w-full sm:w-auto px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all">
                       <option value="all">全部阶段</option>
@@ -250,8 +173,7 @@
                       <option value="未分类">未分类</option>
                     </select>
                   </div>
-                  
-                  <!-- 优先级筛选 -->
+
                   <div class="relative w-full sm:w-auto">
                     <select id="priorityFilter" class="w-full sm:w-auto px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all">
                       <option value="all">全部优先级</option>
@@ -261,15 +183,13 @@
                       <option value="紧急">紧急</option>
                     </select>
                   </div>
-                  
-                  <!-- 搜索框 -->
+
                   <div class="relative w-full sm:w-auto">
-                    <input type="text" id="noteSearchInput" placeholder="搜索注意事项..." 
+                    <input type="text" id="noteSearchInput" placeholder="搜索注意事项..."
                       class="pl-8 pr-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all w-full">
                     <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400"></i>
                   </div>
-                  
-                  <!-- 导入导出按钮 -->
+
                   <div class="flex gap-2">
                     <button type="button" id="importNotesButton" class="px-3 py-1.5 border border-neutral-300 rounded-lg text-sm font-medium hover:bg-neutral-50 transition-colors flex items-center">
                       <i class="fa fa-download mr-1"></i>导入
@@ -283,14 +203,13 @@
                   </div>
                 </div>
               </div>
-              
-              <!-- 过滤结果统计 -->
+
               <div id="noteFilterStats" class="mb-4 text-sm text-neutral-500 hidden">
                 显示 <span id="noteFilteredCount">0</span> 条记录，其中待处理 <span id="pendingCount">0</span> 条
               </div>
-              
+
               <div class="overflow-x-auto">
-                <table class="w-full min-w-[1000px] divide-y divide-neutral-200 dark:divide-neutral-700">
+                <table class="w-full min-w-[1000px] divide-y divide-neutral-200">
                   <thead>
                     <tr>
                       <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider rounded-tl-lg whitespace-nowrap">主题</th>
@@ -304,7 +223,6 @@
                     </tr>
                   </thead>
                   <tbody id="noteList" class="bg-white divide-y divide-neutral-200">
-                    <!-- 注意事项记录将通过JavaScript动态添加 -->
                     <tr class="text-center table-row-animate">
                       <td colspan="8" class="px-3 py-8 text-neutral-400">
                         <i class="fa fa-folder-open-o text-2xl mb-2 block"></i>
@@ -322,26 +240,25 @@
 
     <!-- 编辑注意事项模态框 -->
     <div id="editNoteModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden transition-opacity duration-300">
-      <div class="bg-white dark:bg-neutral-800 rounded-xl p-5 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0 card-shadow" id="editNoteModalContent">
+      <div class="bg-white rounded-xl p-5 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0 card-shadow" id="editNoteModalContent">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold text-neutral-700 dark:text-white">编辑注意事项</h3>
-          <button id="closeEditNoteModal" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors">
+          <h3 class="text-lg font-semibold text-neutral-700">编辑注意事项</h3>
+          <button id="closeEditNoteModal" class="text-neutral-400 hover:text-neutral-600 transition-colors">
             <i class="fa fa-times text-lg"></i>
           </button>
         </div>
-        
+
         <form id="editNoteForm" class="space-y-4">
           <input type="hidden" id="editNoteId" />
-          
+
           <div>
-            <label for="editNoteTitle" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">主题</label>
-            <input type="text" id="editNoteTitle" 
-              class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+            <label for="editNoteTitle" class="block text-sm font-medium text-neutral-600 mb-1">主题</label>
+            <input type="text" id="editNoteTitle" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
           </div>
-          
+
           <div>
-            <label for="editNotePhase" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">装修阶段</label>
-            <select id="editNotePhase" class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+            <label for="editNotePhase" class="block text-sm font-medium text-neutral-600 mb-1">装修阶段</label>
+            <select id="editNotePhase" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
               <option value="设计阶段">设计阶段</option>
               <option value="拆除阶段">拆除阶段</option>
               <option value="水电改造">水电改造</option>
@@ -354,39 +271,39 @@
               <option value="其他">其他</option>
             </select>
           </div>
-          
-          <!-- 图片上传区域 -->
+
           <div>
-            <label class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">图片（选择文件或粘贴）</label>
+            <label class="block text-sm font-medium text-neutral-600 mb-1">图片（选择文件或粘贴）</label>
             <div class="flex gap-2">
               <button type="button" id="editSelectImageButton" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center whitespace-nowrap">
                 <i class="fa fa-upload mr-2"></i>选择图片文件
               </button>
-              
-              <div id="editImageUploadArea" class="flex-1 border-2 border-dashed border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 rounded-lg p-4 text-center cursor-text hover:border-primary transition-colors">
+              <div id="editImageUploadArea" class="flex-1 border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center cursor-text hover:border-primary transition-colors relative">
                 <input type="file" id="editImageInput" accept="image/*" class="hidden">
-                
-                <i class="fa fa-paste text-neutral-400 dark:text-neutral-500 text-xl mb-2"></i>
-                <p class="text-sm text-neutral-500 dark:text-neutral-400">点击或按Ctrl+V粘贴图片</p>
-                <p id="editImagePreviewText" class="text-xs text-neutral-400 dark:text-neutral-500 mt-1 hidden">图片已添加</p>
+                <i class="fa fa-paste text-neutral-400 text-xl mb-2"></i>
+                <p class="text-sm text-neutral-500">点击或按Ctrl+V粘贴图片</p>
+                <p id="editImagePreviewText" class="text-xs text-neutral-400 mt-1 hidden">图片已添加</p>
+                <button id="deleteEditImageButton" class="absolute top-2 right-2 text-neutral-500 hover:text-danger p-1 rounded-full hover:bg-neutral-100 transition-colors hidden">
+                  <i class="fa fa-times"></i>
+                </button>
               </div>
             </div>
             <input type="hidden" id="editImageUrl" value="">
           </div>
-          
+
           <div>
-            <label for="editNoteStatus" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">状态</label>
-            <select id="editNoteStatus" class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+            <label for="editNoteStatus" class="block text-sm font-medium text-neutral-600 mb-1">状态</label>
+            <select id="editNoteStatus" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
               <option value="待处理">待处理</option>
               <option value="处理中">处理中</option>
               <option value="已完成">已完成</option>
               <option value="已取消">已取消</option>
             </select>
           </div>
-          
+
           <div>
-            <label for="editNoteLocation" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">区域</label>
-            <select id="editNoteLocation" class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+            <label for="editNoteLocation" class="block text-sm font-medium text-neutral-600 mb-1">区域</label>
+            <select id="editNoteLocation" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
               <option value="客厅">客厅</option>
               <option value="厨房">厨房</option>
               <option value="主卧">主卧</option>
@@ -399,68 +316,58 @@
               <option value="其他">其他</option>
             </select>
           </div>
-          
+
           <div>
-            <label for="editNotePriority" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">优先级</label>
-            <select id="editNotePriority" class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+            <label for="editNotePriority" class="block text-sm font-medium text-neutral-600 mb-1">优先级</label>
+            <select id="editNotePriority" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
               <option value="低">低</option>
               <option value="中">中</option>
               <option value="高">高</option>
               <option value="紧急">紧急</option>
             </select>
           </div>
-          
+
           <div>
-            <label for="editNoteDescription" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">详述</label>
-            <textarea id="editNoteDescription" rows="4"
-              class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all"></textarea>
+            <label for="editNoteDescription" class="block text-sm font-medium text-neutral-600 mb-1">详述</label>
+            <textarea id="editNoteDescription" rows="4" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all"></textarea>
           </div>
-          
+
           <div>
-            <label for="editNoteDate" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-1">记录日期</label>
-            <input type="date" id="editNoteDate" 
-              class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white rounded-lg input-focus transition-all">
+            <label for="editNoteDate" class="block text-sm font-medium text-neutral-600 mb-1">记录日期</label>
+            <input type="date" id="editNoteDate" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
           </div>
-          
+
           <div class="flex justify-end gap-3">
-            <button type="button" id="cancelEditNote" class="px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-50 transition-colors">
-              取消
-            </button>
-            <button type="submit" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-colors">
-              保存更改
-            </button>
+            <button type="button" id="cancelEditNote" class="px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-50 transition-colors">取消</button>
+            <button type="submit" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-colors">保存更改</button>
           </div>
         </form>
+      </div>
     </div>
-  </div>
-  
-  <!-- 导入文件隐藏输入框 -->
-  <input type="file" id="notesFileInput" accept=".json" class="hidden">
-  
-  <!-- 图片预览模态框 -->
-  <div id="imagePreviewModal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden transition-opacity duration-300">
-    <button id="closeImagePreview" class="absolute top-4 right-4 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center z-10 hover:bg-black/70 transition-colors">
-      <i class="fa fa-times"></i>
-    </button>
-    <img id="previewImage" src="" alt="预览图片" class="max-w-full max-h-[80vh] object-contain">
-  </div>
+
+    <!-- 导入文件隐藏输入框 -->
+    <input type="file" id="notesFileInput" accept=".json" class="hidden">
+
+    <!-- 图片预览模态框 -->
+    <div id="imagePreviewModal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden transition-opacity duration-300">
+      <button id="closeImagePreview" class="absolute top-4 right-4 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center z-10 hover:bg-black/70 transition-colors">
+        <i class="fa fa-times"></i>
+      </button>
+      <img id="previewImage" src="" alt="预览图片" class="max-w-full max-h-[80vh] object-contain">
+    </div>
 
     <!-- 确认清空注意事项模态框 -->
     <div id="confirmClearNotesModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden transition-opacity duration-300">
-      <div class="bg-white dark:bg-neutral-800 rounded-xl p-5 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0 card-shadow" id="confirmClearNotesModalContent">
+      <div class="bg-white rounded-xl p-5 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0 card-shadow" id="confirmClearNotesModalContent">
         <div class="text-center mb-4">
           <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 text-danger mb-4">
             <i class="fa fa-exclamation-triangle text-2xl"></i>
           </div>
           <h3 class="text-xl font-semibold text-red-500 mb-2">确认清空所有记录</h3>
-          <p class="text-neutral-600 dark:text-neutral-300 mb-4">此操作将清空所有注意事项记录，数据将无法恢复，是否确认继续？</p>
+          <p class="text-neutral-600 mb-4">此操作将清空所有注意事项记录，数据将无法恢复，是否确认继续？</p>
           <div class="flex justify-center gap-3">
-            <button id="cancelClearNotes" class="px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg text-neutral-700 dark:text-white font-medium hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors">
-              取消
-            </button>
-            <button id="confirmClearNotes" class="px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition-colors">
-              确认清空
-            </button>
+            <button id="cancelClearNotes" class="px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-50 transition-colors">取消</button>
+            <button id="confirmClearNotes" class="px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition-colors">确认清空</button>
           </div>
         </div>
       </div>
@@ -468,22 +375,17 @@
 
     <!-- 确认删除模态框 -->
     <div id="confirmDeleteNoteModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden transition-opacity duration-300">
-      <div class="bg-white dark:bg-neutral-800 rounded-xl p-5 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0 card-shadow" id="confirmDeleteNoteModalContent">
+      <div class="bg-white rounded-xl p-5 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0 card-shadow" id="confirmDeleteNoteModalContent">
         <div class="text-center mb-4">
           <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 text-danger mb-4">
             <i class="fa fa-exclamation-triangle text-2xl"></i>
           </div>
-          <h3 class="text-lg font-semibold text-neutral-800 dark:text-white">确认删除</h3>
-          <p class="text-neutral-500 dark:text-neutral-400 mt-2">您确定要删除这条注意事项吗？此操作不可撤销。</p>
+          <h3 class="text-lg font-semibold text-neutral-800">确认删除</h3>
+          <p class="text-neutral-500 mt-2">您确定要删除这条注意事项吗？此操作不可撤销。</p>
         </div>
-        
         <div class="flex justify-center gap-3">
-          <button type="button" id="cancelDeleteNote" class="px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-50 transition-colors">
-            取消
-          </button>
-          <button type="button" id="confirmDeleteNote" class="px-4 py-2 bg-danger hover:bg-danger/90 text-white font-medium rounded-lg transition-colors">
-            删除
-          </button>
+          <button type="button" id="cancelDeleteNote" class="px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-50 transition-colors">取消</button>
+          <button type="button" id="confirmDeleteNote" class="px-4 py-2 bg-danger hover:bg-danger/90 text-white font-medium rounded-lg transition-colors">删除</button>
         </div>
       </div>
     </div>
@@ -491,1251 +393,17 @@
     <!-- 页脚 -->
     <footer class="bg-white border-t border-neutral-200 py-4 mt-auto">
       <div class="container mx-auto px-4 text-center text-neutral-500 text-sm">
-        <p>装修管家注意事项 © 2024 | 版本号: v1.0.0</p>
+        <p>装修管家注意事项 &copy; 2024 | 版本号: v2.0.0</p>
       </div>
     </footer>
   </div>
 
-  <script>
-    // IndexedDB数据库管理器
-    const IndexedDBManager = {
-      DB_NAME: 'decoration_notes_db', // 使用独立的数据库名称避免冲突
-      DB_VERSION: 1,
-      STORE_NAME: 'notes',
-      db: null,
-
-      // 初始化数据库
-      initDB() {
-        return new Promise((resolve, reject) => {
-          if (this.db && this.db.readyState !== 'closed') {
-            resolve(this.db);
-            return;
-          }
-
-          const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
-
-          request.onerror = event => {
-            console.error('打开数据库失败:', event.target.error);
-            reject(event.target.error);
-          };
-
-          request.onsuccess = event => {
-            this.db = event.target.result;
-            // 监听数据库关闭事件
-            this.db.onclose = () => {
-              this.db = null;
-            };
-            resolve(this.db);
-          };
-
-          request.onupgradeneeded = event => {
-            const db = event.target.result;
-            
-            // 如果存储对象不存在，则创建
-            if (!db.objectStoreNames.contains(this.STORE_NAME)) {
-              const objectStore = db.createObjectStore(this.STORE_NAME, { keyPath: 'id' });
-              // 创建索引以提高查询性能
-              objectStore.createIndex('phase', 'phase', { unique: false });
-              objectStore.createIndex('location', 'location', { unique: false });
-              objectStore.createIndex('priority', 'priority', { unique: false });
-              objectStore.createIndex('status', 'status', { unique: false });
-              objectStore.createIndex('date', 'date', { unique: false });
-            }
-          };
-        });
-      },
-
-      // 获取所有记录
-      async getAllRecords() {
-        try {
-          const db = await this.initDB();
-          return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.STORE_NAME], 'readonly');
-            const objectStore = transaction.objectStore(this.STORE_NAME);
-            const request = objectStore.getAll();
-
-            request.onerror = event => {
-              console.error('获取记录失败:', event.target.error);
-              reject(event.target.error);
-            };
-
-            request.onsuccess = event => {
-              // 确保返回数组
-              const records = event.target.result || [];
-              // 按日期倒序排序（最新的在前面）
-              records.sort((a, b) => {
-                // 先按时间戳部分排序（提取ID的前13位时间戳）
-                if (a.id && b.id) {
-                  // 提取前13位时间戳部分进行比较
-                  const timestampA = a.id.substring(0, 13);
-                  const timestampB = b.id.substring(0, 13);
-                  
-                  // 先比较时间戳
-                  const timestampDiff = parseInt(timestampB) - parseInt(timestampA);
-                  if (timestampDiff !== 0) {
-                    return timestampDiff;
-                  }
-                  
-                  // 同一毫秒内的记录，使用完整ID字符串比较确保稳定排序
-                  return b.id.localeCompare(a.id);
-                }
-                // 再按日期排序
-                return new Date(b.date) - new Date(a.date);
-              });
-              resolve(records);
-            };
-          });
-        } catch (e) {
-          console.error('获取记录出错:', e);
-          return [];
-        }
-      },
-
-      // 保存单个记录
-      async saveRecord(record) {
-        try {
-          const db = await this.initDB();
-          return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.STORE_NAME], 'readwrite');
-            const objectStore = transaction.objectStore(this.STORE_NAME);
-            const request = objectStore.put(record);
-
-            request.onerror = event => {
-              console.error('保存记录失败:', event.target.error);
-              reject(event.target.error);
-            };
-
-            request.onsuccess = event => {
-              resolve(record);
-            };
-          });
-        } catch (e) {
-          console.error('保存记录出错:', e);
-          return null;
-        }
-      },
-
-      // 删除记录
-      async deleteRecord(id) {
-        try {
-          const db = await this.initDB();
-          return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.STORE_NAME], 'readwrite');
-            const objectStore = transaction.objectStore(this.STORE_NAME);
-            const request = objectStore.delete(id);
-
-            request.onerror = event => {
-              console.error('删除记录失败:', event.target.error);
-              reject(event.target.error);
-            };
-
-            request.onsuccess = event => {
-              resolve(true);
-            };
-          });
-        } catch (e) {
-          console.error('删除记录出错:', e);
-          return false;
-        }
-      },
-
-      // 获取单个记录
-      async getRecord(id) {
-        try {
-          const db = await this.initDB();
-          return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.STORE_NAME], 'readonly');
-            const objectStore = transaction.objectStore(this.STORE_NAME);
-            const request = objectStore.get(id);
-
-            request.onerror = event => {
-              console.error('获取单个记录失败:', event.target.error);
-              reject(event.target.error);
-            };
-
-            request.onsuccess = event => {
-              resolve(event.target.result || null);
-            };
-          });
-        } catch (e) {
-          console.error('获取单个记录出错:', e);
-          return null;
-        }
-      },
-
-      // 清空所有记录
-      async clearAllRecords() {
-        try {
-          const db = await this.initDB();
-          return new Promise((resolve, reject) => {
-            const transaction = db.transaction([this.STORE_NAME], 'readwrite');
-            const objectStore = transaction.objectStore(this.STORE_NAME);
-            const request = objectStore.clear();
-
-            request.onerror = event => {
-              console.error('清空记录失败:', event.target.error);
-              reject(event.target.error);
-            };
-
-            request.onsuccess = event => {
-              resolve(true);
-            };
-          });
-        } catch (e) {
-          console.error('清空记录出错:', e);
-          return false;
-        }
-      }
-    };
-
-    // 数据存储对象
-    const NoteDataManager = {
-      
-      // 获取所有记录
-      async getAllRecords() {
-        return await IndexedDBManager.getAllRecords();
-      },
-      
-      // 导出数据到文件
-      async exportData() {
-        try {
-          const records = await this.getAllRecords();
-          const dataStr = JSON.stringify(records, null, 2);
-          const dataBlob = new Blob([dataStr], { type: 'application/json' });
-          const url = URL.createObjectURL(dataBlob);
-          
-          const link = document.createElement('a');
-          link.href = url;
-          // 使用当前页面名称作为文件名的一部分
-          const pageName = '注意事项';
-          link.download = `装修${pageName}_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.json`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
-          
-          return true;
-        } catch (e) {
-          console.error('导出数据失败:', e);
-          return false;
-        }
-      },
-      
-      // 导入数据
-      async importData(jsonData) {
-        try {
-          const records = JSON.parse(jsonData);
-          if (Array.isArray(records)) {
-            // 先清空现有记录
-            await IndexedDBManager.clearAllRecords();
-            
-            // 保存每条记录，确保有唯一ID
-            for (const record of records) {
-              if (!record.id) {
-                record.id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
-              }
-              await IndexedDBManager.saveRecord(record);
-            }
-            return true;
-          }
-          return false;
-        } catch (e) {
-          console.error('导入数据失败:', e);
-          return false;
-        }
-      },
-      
-      // 保存所有记录（兼容旧接口）
-      async saveRecords(records) {
-        try {
-          // 清空现有记录
-          await IndexedDBManager.clearAllRecords();
-          // 逐条保存记录
-          for (const record of records) {
-            await IndexedDBManager.saveRecord(record);
-          }
-          return true;
-        } catch (e) {
-          console.error('保存记录失败:', e);
-          return false;
-        }
-      },
-      
-      // 添加记录
-      async addRecord(record) {
-        try {
-          // 验证必要字段
-          if (!record || !record.title || !record.date) {
-            console.error('添加记录失败: 缺少必要字段（标题或日期）');
-            return null;
-          }
-          
-          console.log('开始添加记录:', JSON.stringify(record, null, 2));
-          
-          // 生成唯一ID（使用时间戳）
-          record.id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
-          // 添加创建时间
-          record.createdAt = new Date().toISOString();
-          
-          // 确保所有必需的索引字段都存在
-          if (!record.phase) record.phase = '未分类';
-          if (!record.location) record.location = '未指定';
-          if (!record.priority) record.priority = '中';
-          if (!record.status) record.status = '待处理';
-          
-          console.log('记录预处理完成，准备保存:', record.id);
-          
-          // 保存记录到IndexedDB
-          const result = await IndexedDBManager.saveRecord(record);
-          
-          if (result) {
-            console.log('记录保存成功:', result.id);
-          } else {
-            console.error('记录保存失败: 返回结果为空');
-          }
-          
-          return result;
-        } catch (e) {
-          console.error('添加记录异常:', e.stack || e);
-          return null;
-        }
-      },
-      
-      // 更新记录
-      async updateRecord(id, updatedRecord) {
-        try {
-          // 获取原记录
-          const originalRecord = await IndexedDBManager.getRecord(id);
-          if (originalRecord) {
-            // 更新修改时间
-            updatedRecord.updatedAt = new Date().toISOString();
-            const recordToSave = { ...originalRecord, ...updatedRecord };
-            // 保存更新后的记录
-            return await IndexedDBManager.saveRecord(recordToSave);
-          }
-          return false;
-        } catch (e) {
-          console.error('更新记录失败:', e);
-          return false;
-        }
-      },
-      
-      // 删除记录
-      async deleteRecord(id) {
-        try {
-          return await IndexedDBManager.deleteRecord(id);
-        } catch (e) {
-          console.error('删除记录失败:', e);
-          return false;
-        }
-      },
-      
-      // 获取单个记录
-      async getRecord(id) {
-        try {
-          return await IndexedDBManager.getRecord(id);
-        } catch (e) {
-          console.error('获取单个记录失败:', e);
-          return null;
-        }
-      }
-    };
-    
-    // 注意事项控制器
-    const NoteController = {
-      // 添加注意事项
-      async addNote(noteData) {
-        return await NoteDataManager.addRecord(noteData);
-      },
-      
-      // 更新注意事项
-      async updateNote(id, noteData) {
-        return await NoteDataManager.updateRecord(id, noteData);
-      },
-      
-      // 删除注意事项
-      async deleteNote(id) {
-        return await NoteDataManager.deleteRecord(id);
-      },
-      
-      // 获取单个注意事项
-      async getNote(id) {
-        return await NoteDataManager.getRecord(id);
-      },
-      
-      // 获取所有注意事项
-      async getAllNotes() {
-        return await NoteDataManager.getAllRecords();
-      },
-      
-      // 过滤注意事项
-      async filterNotes(filterCriteria) {
-        try {
-          let notes = await this.getAllNotes();
-          
-          // 应用筛选条件
-          if (filterCriteria.status && filterCriteria.status !== 'all') {
-            notes = notes.filter(note => note.status === filterCriteria.status);
-          }
-          
-          // 添加装修阶段筛选
-          if (filterCriteria.phase && filterCriteria.phase !== 'all') {
-            notes = notes.filter(note => note.phase === filterCriteria.phase);
-          }
-          
-          if (filterCriteria.priority && filterCriteria.priority !== 'all') {
-            notes = notes.filter(note => note.priority === filterCriteria.priority);
-          }
-          
-          if (filterCriteria.searchTerm) {
-            const searchTerm = filterCriteria.searchTerm.toLowerCase();
-            notes = notes.filter(note => 
-              note.title.toLowerCase().includes(searchTerm) || 
-              note.description.toLowerCase().includes(searchTerm)
-          );
-          }
-          
-          return notes;
-        } catch (e) {
-          console.error('过滤注意事项失败:', e);
-          return [];
-        }
-        
-        return notes;
-      },
-      
-      // 计算待处理数量
-      calculatePendingCount(notes) {
-        // 确保输入是数组
-        return (notes || []).filter(note => note && note.status === '待处理').length;
-      }
-    };
-    
-    // UI控制器
-    const NoteUIController = {
-      // 初始化UI
-      async init() {
-        try {
-          this.setupEventListeners();
-          // 异步加载注意事项列表
-          await this.loadNoteList();
-          this.setTodayDate();
-          this.initImageUpload();
-        } catch (error) {
-          console.error('初始化UI失败:', error);
-        }
-      },
-      
-      // 设置今天日期
-      setTodayDate() {
-        const today = new Date();
-        const formattedDate = today.toISOString().split('T')[0];
-        
-        if (document.getElementById('noteDate')) {
-          document.getElementById('noteDate').value = formattedDate;
-        }
-      },
-      
-      // 初始化图片上传功能
-      initImageUpload() {
-        // 处理主表单图片上传
-        const imageUploadArea = document.getElementById('imageUploadArea');
-        const imageFileInput = document.getElementById('imageInput');
-        const imageUrl = document.getElementById('imageUrl');
-        const imagePreviewText = document.getElementById('imagePreviewText');
-        const selectImageButton = document.getElementById('selectImageButton');
-        
-        if (imageUploadArea && imageFileInput && selectImageButton) {
-          // 使上传区域可聚焦，以便粘贴图片
-          imageUploadArea.setAttribute('tabindex', '0');
-          imageUploadArea.setAttribute('aria-label', '图片粘贴区域，点击后按Ctrl+V粘贴图片');
-          
-          // 添加视觉提示
-          imageUploadArea.addEventListener('focus', () => {
-            imageUploadArea.classList.add('ring-2', 'ring-primary', 'ring-opacity-50');
-          });
-          
-          imageUploadArea.addEventListener('blur', () => {
-            imageUploadArea.classList.remove('ring-2', 'ring-primary', 'ring-opacity-50');
-          });
-          
-          // 选择文件按钮点击事件
-          selectImageButton.addEventListener('click', () => {
-            imageFileInput.click();
-          });
-          
-          // 处理文件选择
-          imageFileInput.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) {
-              this.handleImageFile(e.target.files[0], imageUrl, imagePreviewText);
-            }
-          });
-          
-          // 处理粘贴事件
-          imageUploadArea.addEventListener('paste', (e) => {
-            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-            for (let index in items) {
-              const item = items[index];
-              if (item.kind === 'file' && item.type.includes('image')) {
-                const file = item.getAsFile();
-                this.handleImageFile(file, imageUrl, imagePreviewText);
-                break;
-              }
-            }
-          });
-        }
-        
-        // 处理编辑表单图片上传
-        const editImageUploadArea = document.getElementById('editImageUploadArea');
-        const editImageFileInput = document.getElementById('editImageInput');
-        const editImageUrl = document.getElementById('editImageUrl');
-        const editImagePreviewText = document.getElementById('editImagePreviewText');
-        const editSelectImageButton = document.getElementById('editSelectImageButton');
-        
-        if (editImageUploadArea && editImageFileInput && editSelectImageButton) {
-          // 使上传区域可聚焦，以便粘贴图片
-          editImageUploadArea.setAttribute('tabindex', '0');
-          editImageUploadArea.setAttribute('aria-label', '图片粘贴区域，点击后按Ctrl+V粘贴图片');
-          
-          // 添加视觉提示
-          editImageUploadArea.addEventListener('focus', () => {
-            editImageUploadArea.classList.add('ring-2', 'ring-primary', 'ring-opacity-50');
-          });
-          
-          editImageUploadArea.addEventListener('blur', () => {
-            editImageUploadArea.classList.remove('ring-2', 'ring-primary', 'ring-opacity-50');
-          });
-          
-          // 选择文件按钮点击事件
-          editSelectImageButton.addEventListener('click', () => {
-            editImageFileInput.click();
-          });
-          
-          // 处理文件选择
-          editImageFileInput.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) {
-              this.handleImageFile(e.target.files[0], editImageUrl, editImagePreviewText);
-            }
-          });
-          
-          // 处理粘贴事件
-          editImageUploadArea.addEventListener('paste', (e) => {
-            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-            for (let index in items) {
-              const item = items[index];
-              if (item.kind === 'file' && item.type.includes('image')) {
-                const file = item.getAsFile();
-                this.handleImageFile(file, editImageUrl, editImagePreviewText);
-                break;
-              }
-            }
-          });
-        }
-        
-        // 绑定图片预览关闭按钮事件
-        if (document.getElementById('closeImagePreview')) {
-          document.getElementById('closeImagePreview').addEventListener('click', this.closeImagePreviewModal.bind(this));
-        }
-      },
-      
-      // 处理图片文件
-      handleImageFile(file, urlInput, previewTextElement) {
-        // 创建文件阅读器
-        const reader = new FileReader();
-        
-        reader.onload = (event) => {
-          // 将图片转换为Base64格式存储
-          const base64Data = event.target.result;
-          
-          // 设置隐藏输入框的值
-          if (urlInput) {
-            urlInput.value = base64Data;
-          }
-          
-          // 显示图片已添加提示
-          if (previewTextElement) {
-            previewTextElement.textContent = `已选择图片: ${file.name}`;
-            previewTextElement.classList.remove('hidden');
-          }
-        };
-        
-        // 读取文件为DataURL
-        reader.readAsDataURL(file);
-      },
-      
-      // 打开图片预览模态框
-      openImagePreviewModal(imageUrl) {
-        document.getElementById('previewImage').src = imageUrl;
-        
-        const modal = document.getElementById('imagePreviewModal');
-        if (modal) {
-          modal.classList.remove('hidden');
-          modal.classList.add('opacity-100');
-          
-          // 阻止背景滚动
-          document.body.style.overflow = 'hidden';
-        }
-      },
-      
-      // 关闭图片预览模态框
-      closeImagePreviewModal() {
-        const modal = document.getElementById('imagePreviewModal');
-        if (modal) {
-          modal.classList.remove('opacity-100');
-          modal.classList.add('hidden');
-          
-          // 恢复背景滚动
-          document.body.style.overflow = 'auto';
-        }
-        
-        // 清空预览图片
-        document.getElementById('previewImage').src = '';
-      },
-      
-      // 设置事件监听器
-      setupEventListeners() {
-        // 表单提交事件
-        if (document.getElementById('noteForm')) {
-          document.getElementById('noteForm').addEventListener('submit', this.handleNoteFormSubmit.bind(this));
-        }
-        
-        // 编辑表单提交事件
-        if (document.getElementById('editNoteForm')) {
-          document.getElementById('editNoteForm').addEventListener('submit', this.handleEditNoteFormSubmit.bind(this));
-        }
-        
-        // 关闭编辑模态框
-        if (document.getElementById('closeEditNoteModal')) {
-          document.getElementById('closeEditNoteModal').addEventListener('click', this.closeEditNoteModal.bind(this));
-        }
-        
-        if (document.getElementById('cancelEditNote')) {
-          document.getElementById('cancelEditNote').addEventListener('click', this.closeEditNoteModal.bind(this));
-        }
-        
-        // 清空记录按钮事件
-        if (document.getElementById('clearAllNotesButton')) {
-          document.getElementById('clearAllNotesButton').addEventListener('click', this.openConfirmClearModal.bind(this));
-        }
-        
-        if (document.getElementById('cancelClearNotes')) {
-          document.getElementById('cancelClearNotes').addEventListener('click', this.closeConfirmClearModal.bind(this));
-        }
-        
-        if (document.getElementById('confirmClearNotes')) {
-          document.getElementById('confirmClearNotes').addEventListener('click', this.handleConfirmClearAll.bind(this));
-        }
-        
-        // 关闭删除确认模态框
-        if (document.getElementById('cancelDeleteNote')) {
-          document.getElementById('cancelDeleteNote').addEventListener('click', this.closeConfirmDeleteNoteModal.bind(this));
-        }
-        
-        // 确认删除
-        if (document.getElementById('confirmDeleteNote')) {
-          document.getElementById('confirmDeleteNote').addEventListener('click', this.handleConfirmDeleteNote.bind(this));
-        }
-        
-        // 筛选器变更事件
-        if (document.getElementById('statusFilter')) {
-          document.getElementById('statusFilter').addEventListener('change', this.handleFilterChange.bind(this));
-        }
-        
-        // 添加装修阶段筛选器事件监听
-        if (document.getElementById('phaseFilter')) {
-          document.getElementById('phaseFilter').addEventListener('change', this.handleFilterChange.bind(this));
-        }
-        
-        if (document.getElementById('priorityFilter')) {
-          document.getElementById('priorityFilter').addEventListener('change', this.handleFilterChange.bind(this));
-        }
-        
-        // 搜索框输入事件
-        if (document.getElementById('noteSearchInput')) {
-          document.getElementById('noteSearchInput').addEventListener('input', this.handleSearchInput.bind(this));
-        }
-        
-        // 绑定导入导出按钮事件
-        if (document.getElementById('exportNotesButton')) {
-          document.getElementById('exportNotesButton').addEventListener('click', async () => {
-            try {
-              if (await NoteDataManager.exportData()) {
-                this.showNotification('导出成功', 'success');
-              } else {
-                this.showNotification('导出失败', 'error');
-              }
-            } catch (error) {
-              console.error('导出数据失败:', error);
-              this.showNotification('导出失败', 'error');
-            }
-          });
-        }
-        
-        if (document.getElementById('importNotesButton')) {
-          document.getElementById('importNotesButton').addEventListener('click', () => {
-            // 显示提示信息，告知用户相关文件位置
-            console.log('提示：请选择之前导出的装修注意事项JSON文件');
-            const fileInput = document.getElementById('notesFileInput');
-            if (fileInput) {
-              fileInput.click();
-            }
-          });
-        }
-        
-        if (document.getElementById('notesFileInput')) {
-          document.getElementById('notesFileInput').addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) {
-              const file = e.target.files[0];
-              const reader = new FileReader();
-              
-              reader.onload = async (event) => {
-                try {
-                  const jsonData = event.target.result;
-                  if (await NoteDataManager.importData(jsonData)) {
-                    await this.loadNoteList();
-                    // 重置文件输入以允许再次选择相同文件
-                    e.target.value = '';
-                    this.showNotification('数据导入成功！', 'success');
-                  } else {
-                    this.showNotification('数据导入失败，请检查文件格式！', 'error');
-                  }
-                } catch (error) {
-                  this.showNotification('数据导入失败: ' + error.message, 'error');
-                }
-              };
-              
-              reader.readAsText(file);
-            }
-          });
-        }
-      },
-      
-      // 处理表单提交
-      async handleNoteFormSubmit(e) {
-        try {
-          e.preventDefault();
-          
-          // 获取表单数据
-          const noteData = {
-            title: document.getElementById('noteTitle').value,
-            phase: document.getElementById('notePhase').value,
-            location: document.getElementById('noteLocation').value,
-            priority: document.getElementById('notePriority').value,
-            status: document.getElementById('noteStatus').value,
-            description: document.getElementById('noteDescription').value,
-            date: document.getElementById('noteDate').value,
-            imageUrl: document.getElementById('imageUrl').value,
-            createdAt: new Date().toISOString()
-          };
-          
-          // 增强验证
-          if (!noteData.title || !noteData.date) {
-            this.showNotification('请填写注意事项主题和日期', 'error');
-            return;
-          }
-          
-          console.log('准备提交注意事项数据:', noteData);
-          
-          // 添加注意事项（异步调用）
-          const newNote = await NoteController.addNote(noteData);
-          if (newNote) {
-            console.log('注意事项添加成功，ID:', newNote.id);
-            
-            // 重置表单
-            const noteForm = document.getElementById('noteForm');
-            if (noteForm) {
-              noteForm.reset();
-              this.setTodayDate();
-            }
-            
-            // 清空图片数据
-            const imageUrlInput = document.getElementById('imageUrl');
-            if (imageUrlInput) {
-              imageUrlInput.value = '';
-            }
-            const imagePreviewText = document.getElementById('imagePreviewText');
-            if (imagePreviewText) {
-              imagePreviewText.classList.add('hidden');
-            }
-            
-            // 重新加载列表（异步调用）
-            await this.loadNoteList();
-            
-            // 显示成功提示
-            this.showNotification('添加成功', 'success');
-          } else {
-            console.error('注意事项添加失败，返回为空');
-            this.showNotification('添加失败', 'error');
-          }
-        } catch (error) {
-          console.error('添加注意事项失败:', error.stack || error);
-          this.showNotification('添加过程中发生错误', 'error');
-        }
-      },
-      
-      // 加载注意事项列表（异步实现）
-      async loadNoteList(filterCriteria = {}) {
-        try {
-          const noteList = document.getElementById('noteList');
-          
-          if (!noteList) return;
-          
-          // 清空列表并显示加载状态
-          noteList.innerHTML = '';
-          const loadingRow = document.createElement('tr');
-          loadingRow.className = 'text-center';
-          loadingRow.innerHTML = `
-            <td colspan="8" class="px-3 py-8 text-neutral-500">
-              <i class="fa fa-spinner fa-spin text-lg mr-2"></i>
-              正在加载记录...
-            </td>
-          `;
-          noteList.appendChild(loadingRow);
-          
-          // 异步获取数据
-          const notes = await NoteController.filterNotes(filterCriteria);
-          
-          // 清空加载状态
-          noteList.innerHTML = '';
-          
-          // 计算待处理数量
-          const pendingCount = NoteController.calculatePendingCount(notes);
-          
-          // 更新统计信息
-          const noteFilterStats = document.getElementById('noteFilterStats');
-          const noteFilteredCount = document.getElementById('noteFilteredCount');
-          const pendingCountEl = document.getElementById('pendingCount');
-          
-          if (noteFilterStats && noteFilteredCount && pendingCountEl) {
-            noteFilterStats.classList.remove('hidden');
-            noteFilteredCount.textContent = notes.length;
-            pendingCountEl.textContent = pendingCount;
-          }
-          
-          // 如果没有记录，显示空状态
-          if (notes.length === 0) {
-            const emptyRow = document.createElement('tr');
-            emptyRow.className = 'text-center table-row-animate';
-            emptyRow.innerHTML = `
-              <td colspan="8" class="px-3 py-8 text-neutral-400">
-                <i class="fa fa-folder-open-o text-2xl mb-2 block"></i>
-                ${filterCriteria.status || filterCriteria.priority || filterCriteria.searchTerm ? '没有符合条件的记录' : '暂无记录，添加您的第一条装修注意事项吧'}
-              </td>
-            `;
-            noteList.appendChild(emptyRow);
-            return;
-          }
-          
-          // 添加记录到列表
-          notes.forEach(note => {
-            const row = document.createElement('tr');
-            row.className = 'table-row-animate hover:bg-neutral-50';
-            
-            // 格式化日期
-            const formattedDate = note.date ? new Date(note.date).toLocaleDateString('zh-CN') : '';
-            
-            row.innerHTML = `
-              <td class="px-2 py-3 font-medium">${note.title}</td>
-              <td class="px-2 py-3 whitespace-nowrap">${note.phase}</td>
-              <td class="px-2 py-3 whitespace-nowrap">${note.location}</td>
-              <td class="px-2 py-3 whitespace-nowrap">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${this.getPriorityBadgeClass(note.priority)}">
-                  ${note.priority}
-                </span>
-              </td>
-              <td class="px-2 py-3 whitespace-nowrap">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${this.getStatusBadgeClass(note.status)}">
-                  ${note.status}
-                </span>
-              </td>
-              <td class="px-2 py-3 whitespace-nowrap">${formattedDate}</td>
-              <td class="px-2 py-3 max-w-[150px] truncate" title="${note.description || ''}">${note.description || '-'}</td>
-              <td class="px-2 py-3 whitespace-nowrap">
-                <div class="flex space-x-1">
-                  ${note.imageUrl ? `<button class="p-1 text-neutral-600 hover:text-blue-500 preview-image-btn tooltip" title="查看图片" data-image="${note.imageUrl}">
-                    <i class="fa fa-image"></i>
-                    <span class="ml-1">图片</span>
-                  </button>` : '<span class="text-gray-400 text-sm">无图片</span>'}
-                  <button class="p-1 text-neutral-600 hover:text-primary edit-note-btn" data-id="${note.id}">
-                    <i class="fa fa-pencil"></i>
-                  </button>
-                  <button class="p-1 text-neutral-600 hover:text-danger delete-note-btn" data-id="${note.id}">
-                    <i class="fa fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            `;
-            
-            noteList.appendChild(row);
-          });
-          
-          // 绑定行内按钮事件
-          document.querySelectorAll('.edit-note-btn').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              try {
-                await this.openEditNoteModal(btn.dataset.id);
-              } catch (error) {
-                console.error('点击编辑按钮处理失败:', error);
-              }
-            });
-          });
-          
-          document.querySelectorAll('.delete-note-btn').forEach(btn => {
-            btn.addEventListener('click', () => this.openConfirmDeleteNoteModal(btn.dataset.id));
-          });
-          
-          document.querySelectorAll('.preview-image-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-              const button = e.target.closest('.preview-image-btn');
-              if (button && button.dataset.image) {
-                this.openImagePreviewModal(button.dataset.image);
-              }
-            });
-          });
-        } catch (error) {
-          console.error('加载注意事项列表失败:', error);
-          
-          // 显示错误状态
-          const noteList = document.getElementById('noteList');
-          if (noteList) {
-            noteList.innerHTML = '';
-            const errorRow = document.createElement('tr');
-            errorRow.className = 'text-center';
-            errorRow.innerHTML = `
-              <td colspan="8" class="px-3 py-8 text-red-500">
-                <i class="fa fa-exclamation-triangle mr-2"></i>
-                加载记录失败，请刷新页面重试
-              </td>
-            `;
-            noteList.appendChild(errorRow);
-          }
-        }
-      },
-      
-      // 根据优先级获取标签样式类
-      getPriorityBadgeClass(priority) {
-        switch (priority) {
-          case '低':
-            return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-          case '中':
-            return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-          case '高':
-            return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200';
-          case '紧急':
-            return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-          default:
-            return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-        }
-      },
-      
-      // 根据状态获取标签样式类
-      getStatusBadgeClass(status) {
-        switch (status) {
-          case '待处理':
-            return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-          case '处理中':
-            return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-          case '已完成':
-            return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-          case '已取消':
-            return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-          default:
-            return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-        }
-      },
-      
-      // 打开编辑模态框
-      async openEditNoteModal(id) {
-        try {
-          console.log('打开编辑模态框，ID:', id);
-          const note = await NoteController.getNote(id);
-          console.log('获取到的注意事项数据:', note);
-          
-          if (!note) {
-            console.error('未找到ID为', id, '的注意事项记录');
-            this.showNotification('未找到该记录', 'error');
-            return;
-          }
-          
-          // 填充表单
-          document.getElementById('editNoteId').value = note.id;
-          document.getElementById('editNoteTitle').value = note.title || '';
-          document.getElementById('editNotePhase').value = note.phase || '';
-          document.getElementById('editNoteLocation').value = note.location || '';
-          document.getElementById('editNotePriority').value = note.priority || '';
-          document.getElementById('editNoteStatus').value = note.status || '';
-          document.getElementById('editNoteDescription').value = note.description || '';
-          document.getElementById('editNoteDate').value = note.date || '';
-          
-          // 设置图片URL
-          document.getElementById('editImageUrl').value = note.imageUrl || '';
-          const editImagePreviewText = document.getElementById('editImagePreviewText');
-          if (editImagePreviewText) {
-            if (note.imageUrl) {
-              editImagePreviewText.textContent = '已选择图片';
-              editImagePreviewText.classList.remove('hidden');
-            } else {
-              editImagePreviewText.classList.add('hidden');
-            }
-          }
-        
-        // 显示模态框
-          const modal = document.getElementById('editNoteModal');
-          const modalContent = document.getElementById('editNoteModalContent');
-          
-          if (modal && modalContent) {
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-              modal.classList.add('opacity-100');
-              modalContent.classList.remove('scale-95', 'opacity-0');
-              modalContent.classList.add('scale-100', 'opacity-100');
-            }, 10);
-          }
-        } catch (error) {
-          console.error('打开编辑模态框失败:', error);
-          this.showNotification('打开编辑窗口失败', 'error');
-        }
-      },
-      
-      // 关闭编辑模态框
-      closeEditNoteModal() {
-        const modal = document.getElementById('editNoteModal');
-        const modalContent = document.getElementById('editNoteModalContent');
-        
-        if (modal && modalContent) {
-          modal.classList.remove('opacity-100');
-          modalContent.classList.remove('scale-100', 'opacity-100');
-          modalContent.classList.add('scale-95', 'opacity-0');
-          
-          setTimeout(() => {
-            modal.classList.add('hidden');
-          }, 300);
-        }
-      },
-      
-      // 打开清空确认模态框
-      openConfirmClearModal() {
-        const modal = document.getElementById('confirmClearNotesModal');
-        const modalContent = document.getElementById('confirmClearNotesModalContent');
-        
-        if (modal && modalContent) {
-          modal.classList.remove('hidden');
-          setTimeout(() => {
-            modal.classList.add('opacity-100');
-            modalContent.classList.remove('scale-95', 'opacity-0');
-            modalContent.classList.add('scale-100', 'opacity-100');
-          }, 10);
-        }
-      },
-      
-      // 关闭清空确认模态框
-      closeConfirmClearModal() {
-        const modal = document.getElementById('confirmClearNotesModal');
-        const modalContent = document.getElementById('confirmClearNotesModalContent');
-        
-        if (modal && modalContent) {
-          modal.classList.remove('opacity-100');
-          modalContent.classList.remove('scale-100', 'opacity-100');
-          modalContent.classList.add('scale-95', 'opacity-0');
-          
-          setTimeout(() => {
-            modal.classList.add('hidden');
-          }, 300);
-        }
-      },
-      
-      // 确认清空所有记录
-      async handleConfirmClearAll() {
-        try {
-          await IndexedDBManager.clearAllRecords();
-          this.closeConfirmClearModal();
-          await this.loadNoteList(this.getCurrentFilterCriteria());
-          this.showNotification('所有记录已成功清空', 'success');
-        } catch (error) {
-          console.error('清空记录失败:', error);
-          this.showNotification('清空记录失败，请重试', 'error');
-        }
-      },
-      
-      // 处理编辑表单提交
-      async handleEditNoteFormSubmit(e) {
-        try {
-          e.preventDefault();
-          
-          const id = document.getElementById('editNoteId').value;
-          
-          // 获取表单数据
-          const updatedData = {
-            title: document.getElementById('editNoteTitle').value,
-            phase: document.getElementById('editNotePhase').value,
-            location: document.getElementById('editNoteLocation').value,
-            priority: document.getElementById('editNotePriority').value,
-            status: document.getElementById('editNoteStatus').value,
-            description: document.getElementById('editNoteDescription').value,
-            date: document.getElementById('editNoteDate').value,
-            imageUrl: document.getElementById('editImageUrl').value,
-            updatedAt: new Date().toISOString()
-          };
-          
-          // 简单验证
-          if (!updatedData.title) {
-            alert('请填写注意事项主题');
-            return;
-          }
-          
-          // 更新记录（异步调用）
-          if (await NoteController.updateNote(id, updatedData)) {
-            this.closeEditNoteModal();
-            await this.loadNoteList(this.getCurrentFilterCriteria());
-            this.showNotification('更新成功', 'success');
-          } else {
-            this.showNotification('更新失败', 'error');
-          }
-        } catch (error) {
-          console.error('更新注意事项失败:', error);
-          this.showNotification('更新失败', 'error');
-        }
-      },
-      
-      // 打开删除确认模态框
-      openConfirmDeleteNoteModal(id) {
-        document.getElementById('confirmDeleteNote').dataset.id = id;
-        
-        const modal = document.getElementById('confirmDeleteNoteModal');
-        const modalContent = document.getElementById('confirmDeleteNoteModalContent');
-        
-        if (modal && modalContent) {
-          modal.classList.remove('hidden');
-          setTimeout(() => {
-            modal.classList.add('opacity-100');
-            modalContent.classList.remove('scale-95', 'opacity-0');
-            modalContent.classList.add('scale-100', 'opacity-100');
-          }, 10);
-        }
-      },
-      
-      // 关闭删除确认模态框
-      closeConfirmDeleteNoteModal() {
-        const modal = document.getElementById('confirmDeleteNoteModal');
-        const modalContent = document.getElementById('confirmDeleteNoteModalContent');
-        
-        if (modal && modalContent) {
-          modal.classList.remove('opacity-100');
-          modalContent.classList.remove('scale-100', 'opacity-100');
-          modalContent.classList.add('scale-95', 'opacity-0');
-          
-          setTimeout(() => {
-            modal.classList.add('hidden');
-          }, 300);
-        }
-      },
-      
-      // 处理确认删除
-      async handleConfirmDeleteNote() {
-        try {
-          const id = document.getElementById('confirmDeleteNote').dataset.id;
-          
-          if (await NoteController.deleteNote(id)) {
-            this.closeConfirmDeleteNoteModal();
-            await this.loadNoteList(this.getCurrentFilterCriteria());
-            this.showNotification('删除成功', 'success');
-          } else {
-            this.showNotification('删除失败', 'error');
-          }
-        } catch (error) {
-          console.error('删除注意事项失败:', error);
-          this.showNotification('删除失败', 'error');
-        }
-      },
-      
-      // 处理筛选器变更
-      async handleFilterChange() {
-        try {
-          await this.loadNoteList(this.getCurrentFilterCriteria());
-        } catch (error) {
-          console.error('筛选失败:', error);
-        }
-      },
-      
-      // 处理搜索输入
-      async handleSearchInput(e) {
-        try {
-          const searchTerm = e.target.value;
-          await this.loadNoteList({
-            ...this.getCurrentFilterCriteria(),
-            searchTerm
-          });
-        } catch (error) {
-          console.error('搜索失败:', error);
-        }
-      },
-      
-      // 获取当前筛选条件
-      getCurrentFilterCriteria() {
-        const statusFilter = document.getElementById('statusFilter');
-        const phaseFilter = document.getElementById('phaseFilter');
-        const priorityFilter = document.getElementById('priorityFilter');
-        const noteSearchInput = document.getElementById('noteSearchInput');
-        
-        // 获取状态筛选条件
-        const status = statusFilter ? statusFilter.value : 'all';
-        
-        // 获取装修阶段筛选条件
-        const phase = phaseFilter ? phaseFilter.value : 'all';
-        
-        // 获取优先级筛选条件
-        const priority = priorityFilter ? priorityFilter.value : 'all';
-        
-        // 获取搜索关键词
-        const searchTerm = noteSearchInput ? noteSearchInput.value : '';
-        
-        return {
-          status,
-          phase,
-          priority,
-          searchTerm
-        };
-      },
-      
-      // 显示通知
-      showNotification(message, type = 'info') {
-        // 减少不必要的通知，默认只在控制台显示
-        console.log(`[装修管家] ${message}`);
-        
-        // 只对重要操作（导入/导出）显示实际通知
-        const importantActions = ['导出成功', '导出失败', '数据导入成功', '数据导入失败'];
-        const shouldShowNotification = importantActions.some(action => message.includes(action));
-        
-        if (shouldShowNotification && 'Notification' in window) {
-          // 请求通知权限
-          if (Notification.permission === 'granted') {
-            new Notification('装修管家', {
-              body: message,
-              icon: 'data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%234f46e5\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpath d=\'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\'/%3e%3cpolyline points=\'9 22 9 12 15 12 15 22\'/%3e%3c/svg%3e',
-              tag: 'decoration-app'
-            });
-          }
-        }
-      }
-    };
-    
-    // 当DOM加载完成后初始化应用
-    document.addEventListener('DOMContentLoaded', async function() {
-      // 设置默认日期为今天
-      const today = new Date();
-      const formattedDate = today.toISOString().split('T')[0];
-      
-      if (document.getElementById('noteDate')) {
-        document.getElementById('noteDate').value = formattedDate;
-      }
-      
-      // 初始化UI控制器
-      if (typeof NoteUIController !== 'undefined') {
-        await NoteUIController.init();
-      }
-    });
-  </script>
+  <script src="js/indexeddb-manager.js"></script>
+  <script src="js/api-client.js"></script>
+  <script src="js/modal-utils.js"></script>
+  <script src="js/image-upload.js"></script>
+  <script src="js/notification.js"></script>
+  <script src="js/import-export.js"></script>
+  <script src="js/app-note.js"></script>
 </body>
 </html>

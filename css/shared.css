@@ -1,0 +1,55 @@
+/* 装修管家 - 共享自定义样式 */
+
+/* 卡片阴影 */
+.card-shadow {
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+/* 带悬停效果的卡片 */
+.card-hover {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* 通用悬停抬起效果 */
+.hover-lift {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.hover-lift:hover {
+  transform: translateY(-1px);
+}
+
+/* 输入框聚焦样式 */
+.input-focus:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* 表格行过渡动画 */
+.table-row-animate {
+  transition: all 0.3s;
+}
+
+/* 表头禁止换行 */
+.nowrap-header {
+  white-space: nowrap;
+}
+
+/* 模块容器过渡 */
+.module-container {
+  transition: all 0.3s ease;
+}
+
+/* 禁用用户选择 */
+.no-select {
+  user-select: none;
+}
+
+/* 恢复用户选择 */
+.allow-select {
+  user-select: auto;
+}
