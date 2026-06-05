@@ -38,13 +38,29 @@
 
 ```bash
 pip install -r requirements.txt
-python app.py
+./app.sh start
 # → http://0.0.0.0:5000
 ```
 
 局域网内手机、电脑访问 `http://<服务器IP>:5000`，多设备共享 SQLite 数据库。
 
 启动时自动切换：Flask 向页面注入配置，前端检测到服务器模式后使用 HTTP API 替代 IndexedDB。
+
+常用管理命令：
+
+```bash
+./app.sh start    # 后台启动
+./app.sh stop     # 停止服务
+./app.sh restart  # 重启服务
+./app.sh status   # 查看状态
+./app.sh logs     # 实时查看日志
+```
+
+默认监听 `0.0.0.0:5000`，可通过环境变量调整：
+
+```bash
+APP_HOST=0.0.0.0 APP_PORT=8080 ./app.sh start
+```
 
 ## 旧数据迁移
 
@@ -67,7 +83,9 @@ python app.py --import 注意事项.json --type notes
 |------|------|
 | `--import FILE.json` | 导入 JSON 数据到数据库 |
 | `--type expenses\|notes` | 指定数据类型（默认自动检测） |
+| `--host 0.0.0.0` | 服务监听地址（默认 0.0.0.0） |
 | `--port 5000` | 服务端口（默认 5000） |
+| `--debug` | 开启 Flask 调试模式 |
 
 ## 数据备份
 

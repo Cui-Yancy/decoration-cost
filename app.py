@@ -334,7 +334,9 @@ if __name__ == '__main__':
                         help='导入旧版 JSON 数据到数据库')
     parser.add_argument('--type', dest='import_type', choices=['expenses', 'notes'],
                         help='数据类型 (自动检测)')
+    parser.add_argument('--host', default='0.0.0.0', help='服务监听地址 (默认: 0.0.0.0)')
     parser.add_argument('--port', type=int, default=5000, help='服务端口 (默认: 5000)')
+    parser.add_argument('--debug', action='store_true', help='开启 Flask 调试模式')
     args = parser.parse_args()
 
     init_db()
@@ -342,6 +344,6 @@ if __name__ == '__main__':
     if args.import_file:
         import_json_file(args.import_file, args.import_type)
 
-    print(f'装修管家服务启动: http://0.0.0.0:{args.port}')
+    print(f'装修管家服务启动: http://{args.host}:{args.port}')
     print(f'数据库: {DATABASE}')
-    app.run(host='0.0.0.0', port=args.port, debug=True)
+    app.run(host=args.host, port=args.port, debug=args.debug)
