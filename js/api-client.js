@@ -11,7 +11,7 @@ function createApiClient(baseURL, storeName) {
     },
 
     migrateRecord(record) {
-      return ImportExport.migrateRecord(record, storeName === 'notes' ? 'notes' : 'expenses');
+      return ImportExport.migrateRecord(record, 'expenses');
     },
 
     async importFromJSON(jsonData) {
@@ -19,8 +19,7 @@ function createApiClient(baseURL, storeName) {
         const records = JSON.parse(jsonData);
         if (!Array.isArray(records)) return false;
 
-        const endpoint = storeName === 'notes' ? '/api/migrate/notes' : '/api/migrate/expenses';
-        const resp = await fetch(baseURL + endpoint, {
+        const resp = await fetch(baseURL + '/api/migrate/expenses', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(records)

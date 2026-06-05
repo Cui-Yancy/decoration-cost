@@ -1,5 +1,15 @@
 /* 装修管家 - 共享自定义样式 */
 
+html {
+  color-scheme: light;
+}
+
+body {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
 /* 卡片阴影 */
 .card-shadow {
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -31,7 +41,7 @@
 
 /* 表格行过渡动画 */
 .table-row-animate {
-  transition: all 0.3s;
+  transition: background-color 0.2s;
 }
 
 /* 表头禁止换行 */
@@ -41,7 +51,7 @@
 
 /* 模块容器过渡 */
 .module-container {
-  transition: all 0.3s ease;
+  transition: opacity 0.2s ease;
 }
 
 /* 禁用用户选择 */
@@ -52,4 +62,30 @@
 /* 恢复用户选择 */
 .allow-select {
   user-select: auto;
+}
+
+.money-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.18);
+}
+
+.app-surface {
+  background:
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.08), transparent 28rem),
+    linear-gradient(180deg, #f8fafc 0%, #f9fafb 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

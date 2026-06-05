@@ -3,41 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>装修管家 - 支出记录</title>
+  <title>装修支出管家 - 支出管理</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="css/shared.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="js/shared-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-neutral-50 text-neutral-800 min-h-screen no-select">
+<body class="app-surface text-neutral-800 min-h-screen">
   <div class="flex flex-col min-h-screen">
     <!-- 导航栏 -->
     <header class="bg-white border-b border-neutral-200 sticky top-0 z-30">
       <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-        <div class="flex items-center space-x-2">
-          <i class="fa fa-home text-primary text-2xl"></i>
-          <h1 class="text-xl font-bold text-neutral-800">装修管家</h1>
-        </div>
+        <a href="index.html" class="flex items-center space-x-2 focus-ring rounded-lg">
+          <span class="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center">
+            <i class="fa fa-home" aria-hidden="true"></i>
+          </span>
+          <span>
+            <span class="block text-lg font-bold text-neutral-900">装修支出管家</span>
+            <span class="hidden sm:block text-xs text-neutral-500">支出、采购和安装状态</span>
+          </span>
+        </a>
 
-        <div class="flex items-center space-x-4">
-          <a href="cost.html" class="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors">支出记录</a>
-          <a href="note.html" class="px-4 py-2 rounded-lg bg-white text-primary border border-primary font-medium hover:bg-primary/5 transition-colors">注意事项</a>
-          <button class="text-neutral-500 hover:text-neutral-700 p-2 rounded-full hover:bg-neutral-100 transition-colors">
-            <i class="fa fa-question-circle"></i>
+        <div class="flex items-center space-x-2">
+          <a href="cost.html" class="hidden sm:inline-flex px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors focus-ring">支出管理</a>
+          <button type="button" aria-label="帮助" class="text-neutral-500 hover:text-neutral-700 p-2 rounded-full hover:bg-neutral-100 transition-colors focus-ring">
+            <i class="fa fa-question-circle" aria-hidden="true"></i>
           </button>
         </div>
       </div>
     </header>
 
     <!-- 主要内容 -->
-    <main class="flex-grow container mx-auto px-4 py-6 no-select">
+    <main class="flex-grow container mx-auto px-4 py-6">
       <!-- 支出记录模块 -->
       <div id="expenseModule" class="module-container">
+        <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 mb-4" aria-label="支出总览">
+          <div class="bg-white border border-neutral-200 rounded-lg p-4 card-shadow min-w-0">
+            <p class="text-xs text-neutral-500 mb-2">总支出</p>
+            <p id="summaryTotalAmount" class="text-2xl font-bold text-primary money-nums">¥0.00</p>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-4 card-shadow min-w-0">
+            <p class="text-xs text-neutral-500 mb-2">记录数</p>
+            <p id="summaryRecordCount" class="text-2xl font-bold text-neutral-900 money-nums">0</p>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-4 card-shadow min-w-0">
+            <p class="text-xs text-neutral-500 mb-2">待跟进</p>
+            <p id="summaryPendingCount" class="text-2xl font-bold text-amber-600 money-nums">0</p>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-4 card-shadow min-w-0">
+            <p class="text-xs text-neutral-500 mb-2">最近采购</p>
+            <p id="summaryLatestDate" class="text-xl sm:text-2xl font-bold text-neutral-900 money-nums break-words">-</p>
+          </div>
+        </section>
+
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
           <!-- 左侧：添加支出表单 -->
           <div class="lg:col-span-3 lg:pr-4">
-            <div class="bg-white rounded-xl p-5 card-shadow hover-lift transition-all duration-300">
+            <div class="bg-white border border-neutral-200 rounded-lg p-5 card-shadow lg:sticky lg:top-24">
               <h2 class="text-lg md:text-xl font-semibold mb-4 flex items-center text-neutral-700">
                 <i class="fa fa-plus-circle text-primary mr-2"></i>添加支出项目
               </h2>
@@ -147,8 +170,8 @@
                         <p class="text-sm text-neutral-500">点击此处并粘贴图片</p>
                         <p id="imagePreviewText" class="text-xs text-neutral-400 mt-1 hidden">图片已添加</p>
                       </div>
-                      <button id="deleteImageButton" class="absolute top-2 right-2 text-neutral-500 hover:text-danger p-1 rounded-full hover:bg-neutral-100 transition-colors hidden">
-                        <i class="fa fa-times"></i>
+                      <button type="button" id="deleteImageButton" aria-label="删除图片" class="absolute top-2 right-2 text-neutral-500 hover:text-danger p-1 rounded-full hover:bg-neutral-100 transition-colors hidden focus-ring">
+                        <i class="fa fa-times" aria-hidden="true"></i>
                       </button>
                     </div>
                   </div>
@@ -157,7 +180,7 @@
 
                 <div>
                   <label for="notes" class="block text-sm font-medium text-neutral-600 mb-1">备注 (可选)</label>
-                  <textarea id="notes" rows="3" placeholder="添加备注信息..."
+                  <textarea id="notes" rows="3" placeholder="添加备注信息…"
                     class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all"></textarea>
                 </div>
 
@@ -171,14 +194,14 @@
           <!-- 右侧：统计和支出记录列表 -->
           <div class="lg:col-span-9">
             <!-- 统计图表区域 -->
-            <div class="bg-white rounded-xl p-5 mb-4 card-shadow hover-lift transition-all duration-300">
+            <div class="bg-white border border-neutral-200 rounded-lg p-5 mb-4 card-shadow">
               <div class="flex justify-between items-center mb-4">
                 <h2 class="text-lg font-semibold flex items-center text-neutral-700">
                   <i class="fa fa-pie-chart text-primary mr-2"></i>支出统计
                 </h2>
                 <div class="flex space-x-2">
-                  <button id="categoryChartBtn" class="px-3 py-1 text-sm bg-primary text-white rounded-lg">类别统计</button>
-                  <button id="areaChartBtn" class="px-3 py-1 text-sm bg-neutral-100 text-neutral-600 rounded-lg hover:bg-neutral-200 transition-colors">区域统计</button>
+                    <button type="button" id="categoryChartBtn" class="px-3 py-1 text-sm bg-primary text-white rounded-lg focus-ring">类别统计</button>
+                    <button type="button" id="areaChartBtn" class="px-3 py-1 text-sm bg-neutral-100 text-neutral-600 rounded-lg hover:bg-neutral-200 transition-colors focus-ring">区域统计</button>
                 </div>
               </div>
 
@@ -197,21 +220,21 @@
             </div>
 
             <!-- 支出记录列表 -->
-            <div class="bg-white rounded-xl p-5 card-shadow hover-lift transition-all duration-300 hover:shadow-lg">
+            <div class="bg-white border border-neutral-200 rounded-lg p-5 card-shadow">
               <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
                 <h2 class="text-lg md:text-xl font-semibold flex items-center text-neutral-700">
                   <i class="fa fa-list-alt text-primary mr-2"></i>支出记录
                 </h2>
 
-                <div class="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
-                  <div class="flex space-x-2">
-                    <button id="exportData" class="px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all flex items-center">
+                <div class="w-full sm:w-auto flex flex-col sm:flex-row sm:flex-wrap gap-3">
+                  <div class="flex flex-wrap gap-2">
+                    <button type="button" id="exportData" class="px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all inline-flex items-center whitespace-nowrap">
                       <i class="fa fa-upload mr-1"></i> 导出数据
                     </button>
-                    <button id="importData" class="px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all flex items-center">
+                    <button type="button" id="importData" class="px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all inline-flex items-center whitespace-nowrap">
                       <i class="fa fa-download mr-1"></i> 导入数据
                     </button>
-                    <button id="clearAllRecords" class="px-3 py-1.5 border border-danger rounded-lg text-sm input-focus transition-all flex items-center text-danger hover:bg-danger/5">
+                    <button type="button" id="clearAllRecords" class="px-3 py-1.5 border border-danger rounded-lg text-sm input-focus transition-all inline-flex items-center whitespace-nowrap text-danger hover:bg-danger/5">
                       <i class="fa fa-trash mr-1"></i> 清空所有记录
                     </button>
                     <input type="file" id="fileInput" accept=".json" class="hidden">
@@ -262,7 +285,16 @@
                   </div>
 
                   <div class="relative w-full sm:w-auto">
-                    <input type="text" id="searchInput" placeholder="搜索项目..."
+                    <select id="sortFilter" class="w-full sm:w-auto px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all">
+                      <option value="date_desc">日期从新到旧</option>
+                      <option value="date_asc">日期从旧到新</option>
+                      <option value="amount_desc">金额从高到低</option>
+                      <option value="amount_asc">金额从低到高</option>
+                    </select>
+                  </div>
+
+                  <div class="relative w-full sm:w-auto">
+                    <input type="text" id="searchInput" placeholder="搜索项目…"
                       class="pl-8 pr-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all w-full">
                     <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400"></i>
                   </div>
@@ -270,10 +302,12 @@
               </div>
 
               <div id="filterStats" class="mb-4 text-sm text-neutral-500 hidden">
-                显示 <span id="filteredCount">0</span> 条记录，总计 <span id="totalExpense">0</span> 元
+                显示 <span id="filteredCount">0</span> 条记录，总计 <span id="totalExpense">¥0.00</span>
               </div>
 
-              <div class="overflow-x-auto">
+              <div id="expenseCards" class="md:hidden space-y-3"></div>
+
+              <div class="hidden md:block overflow-x-auto">
                 <table class="w-full min-w-[1000px] divide-y divide-neutral-200">
                   <thead>
                     <tr>
@@ -312,8 +346,8 @@
       <div class="bg-white rounded-xl p-5 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0 card-shadow" id="editModalContent">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-semibold text-neutral-700">编辑项目</h3>
-          <button id="closeEditModal" class="text-neutral-400 hover:text-neutral-600 transition-colors">
-            <i class="fa fa-times text-lg"></i>
+          <button type="button" id="closeEditModal" aria-label="关闭编辑窗口" class="text-neutral-400 hover:text-neutral-600 transition-colors focus-ring rounded">
+            <i class="fa fa-times text-lg" aria-hidden="true"></i>
           </button>
         </div>
 
@@ -418,8 +452,8 @@
                   <p class="text-sm text-neutral-500">点击此处并粘贴图片</p>
                   <p id="editImagePreviewText" class="text-xs text-neutral-400 mt-1 hidden">图片已添加</p>
                 </div>
-                <button id="deleteEditImageButton" class="absolute top-2 right-2 text-neutral-500 hover:text-danger p-1 rounded-full hover:bg-neutral-100 transition-colors hidden">
-                  <i class="fa fa-times"></i>
+                <button type="button" id="deleteEditImageButton" aria-label="删除图片" class="absolute top-2 right-2 text-neutral-500 hover:text-danger p-1 rounded-full hover:bg-neutral-100 transition-colors hidden focus-ring">
+                  <i class="fa fa-times" aria-hidden="true"></i>
                 </button>
               </div>
             </div>
@@ -478,8 +512,8 @@
     <!-- 图片预览模态框 -->
     <div id="imagePreviewModal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden transition-opacity duration-300">
       <div class="relative w-full max-w-4xl max-h-[90vh] p-4">
-        <button id="closeImagePreview" class="absolute top-4 right-4 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center z-10 hover:bg-black/70 transition-colors">
-          <i class="fa fa-times"></i>
+        <button type="button" id="closeImagePreview" aria-label="关闭图片预览" class="absolute top-4 right-4 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center z-10 hover:bg-black/70 transition-colors focus-ring">
+          <i class="fa fa-times" aria-hidden="true"></i>
         </button>
         <div class="relative w-full h-full flex items-center justify-center">
           <img id="previewImage" src="" alt="预览图片" class="max-w-full max-h-[80vh] object-contain">

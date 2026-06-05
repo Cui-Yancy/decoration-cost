@@ -1,13 +1,12 @@
-# 装修管家
+# 装修支出管家
 
-装修过程管理工具，支持支出记录和注意事项追踪。
+装修支出管理工具，支持采购记录、状态跟进、分类统计、图片凭证和数据导入导出。
 
 ## 项目结构
 
 ```
 ├── index.html              # 首页
-├── cost.html               # 支出记录
-├── note.html               # 注意事项
+├── cost.html               # 支出管理
 ├── app.py                  # Flask 后端（服务器模式）
 ├── requirements.txt        # Python 依赖
 ├── css/
@@ -20,8 +19,7 @@
     ├── image-upload.js     # 图片上传
     ├── notification.js     # 通知系统
     ├── import-export.js    # 数据导入导出 + 迁移适配器
-    ├── app-cost.js         # 支出记录页面逻辑
-    └── app-note.js         # 注意事项页面逻辑
+    └── app-cost.js         # 支出管理页面逻辑
 ```
 
 ## 两种使用模式
@@ -67,12 +65,11 @@ APP_HOST=0.0.0.0 APP_PORT=8080 ./app.sh start
 如果之前用过旧版，可以将导出的 JSON 导入到共享数据库：
 
 ```bash
-# 自动识别数据类型（支出记录 / 注意事项）
+# 自动识别数据类型
 python app.py --import 旧数据.json
 
 # 或指定类型
 python app.py --import 支出记录.json --type expenses
-python app.py --import 注意事项.json --type notes
 ```
 
 也支持服务器运行中通过网页「导入数据」按钮导入。
@@ -82,7 +79,7 @@ python app.py --import 注意事项.json --type notes
 | 参数 | 说明 |
 |------|------|
 | `--import FILE.json` | 导入 JSON 数据到数据库 |
-| `--type expenses\|notes` | 指定数据类型（默认自动检测） |
+| `--type expenses` | 指定数据类型（默认自动检测） |
 | `--host 0.0.0.0` | 服务监听地址（默认 0.0.0.0） |
 | `--port 5000` | 服务端口（默认 5000） |
 | `--debug` | 开启 Flask 调试模式 |

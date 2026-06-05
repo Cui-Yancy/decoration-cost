@@ -126,11 +126,27 @@ const ExpenseController = {
     if (filterCriteria.searchTerm) {
       const searchTerm = filterCriteria.searchTerm.toLowerCase();
       expenses = expenses.filter(expense =>
-        expense.name.toLowerCase().includes(searchTerm) ||
-        expense.brand.toLowerCase().includes(searchTerm) ||
-        expense.notes.toLowerCase().includes(searchTerm)
+        (expense.name || '').toLowerCase().includes(searchTerm) ||
+        (expense.brand || '').toLowerCase().includes(searchTerm) ||
+        (expense.model || '').toLowerCase().includes(searchTerm) ||
+        (expense.notes || '').toLowerCase().includes(searchTerm)
       );
     }
+
+    const sortBy = filterCriteria.sortBy || 'date_desc';
+    expenses.sort((a, b) => {
+      const amountA = (parseFloat(a.price) || 0) * (parseInt(a.quantity) || 1);
+      const amountB = (parseFloat(b.price) || 0) * (parseInt(b.quantity) || 1);
+      const dateA = new Date(a.purchaseDate || a.date || 0).getTime();
+      const dateB = new Date(b.purchaseDate || b.date || 0).getTime();
+
+      switch (sortBy) {
+        case 'date_asc': return dateA - dateB;
+        case 'amount_desc': return amountB - amountA;
+        case 'amount_asc': return amountA - amountB;
+        default: return dateB - dateA;
+      }
+    });
     return expenses;
   },
 
@@ -171,6 +187,8 @@ const ExpenseController = {
 const UIController = {
   chartInstance: null,
   currentChartType: 'category',
+  currencyFormatter: new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' }),
+  dateFormatter: new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }),
 
   async init() {
     this.setupEventListeners();
@@ -241,6 +259,8 @@ const UIController = {
     if (areaFilter) areaFilter.addEventListener('change', () => this.handleFilterChange());
     const statusFilter = document.getElementById('statusFilter');
     if (statusFilter) statusFilter.addEventListener('change', () => this.handleFilterChange());
+    const sortFilter = document.getElementById('sortFilter');
+    if (sortFilter) sortFilter.addEventListener('change', () => this.handleFilterChange());
 
     const searchInput = document.getElementById('searchInput');
     if (searchInput) searchInput.addEventListener('input', (e) => this.handleSearchInput(e));
@@ -342,11 +362,14 @@ const UIController = {
     try {
       const expenses = await ExpenseController.filterExpenses(filterCriteria);
       const expenseList = document.getElementById('expenseList');
-      if (!expenseList) return;
+      const expenseCards = document.getElementById('expenseCards');
+      if (!expenseList && !expenseCards) return;
 
-      expenseList.innerHTML = '';
+      if (expenseList) expenseList.innerHTML = '';
+      if (expenseCards) expenseCards.innerHTML = '';
 
       const totalExpense = ExpenseController.calculateTotal(expenses);
+      this.updateSummary(expenses, totalExpense);
 
       const filterStats = document.getElementById('filterStats');
       const filteredCount = document.getElementById('filteredCount');
@@ -354,15 +377,20 @@ const UIController = {
       if (filterStats && filteredCount && totalExpenseEl) {
         filterStats.classList.remove('hidden');
         filteredCount.textContent = expenses.length;
-        totalExpenseEl.textContent = totalExpense.toFixed(2);
+        totalExpenseEl.textContent = this.formatCurrency(totalExpense);
       }
 
       if (expenses.length === 0) {
+        const emptyText = (filterCriteria.category !== 'all' || filterCriteria.area !== 'all' || filterCriteria.status !== 'all' || filterCriteria.searchTerm)
+          ? '没有符合条件的记录'
+          : '暂无记录，添加您的第一个装修项目吧';
         const emptyRow = document.createElement('tr');
         emptyRow.className = 'text-center table-row-animate';
-        emptyRow.innerHTML = '<td colspan="13" class="px-3 py-8 text-neutral-400"><i class="fa fa-folder-open-o text-2xl mb-2 block"></i>' +
-          (filterCriteria.category || filterCriteria.area || filterCriteria.searchTerm ? '没有符合条件的记录' : '暂无记录，添加您的第一个装修项目吧') + '</td>';
-        expenseList.appendChild(emptyRow);
+        emptyRow.innerHTML = '<td colspan="12" class="px-3 py-8 text-neutral-400"><i class="fa fa-folder-open-o text-2xl mb-2 block"></i>' + emptyText + '</td>';
+        if (expenseList) expenseList.appendChild(emptyRow);
+        if (expenseCards) {
+          expenseCards.innerHTML = '<div class="text-center bg-neutral-50 border border-neutral-200 rounded-lg p-8 text-neutral-400"><i class="fa fa-folder-open-o text-2xl mb-2 block"></i>' + emptyText + '</div>';
+        }
         return;
       }
 
@@ -370,26 +398,27 @@ const UIController = {
         const row = document.createElement('tr');
         row.className = 'table-row-animate hover:bg-neutral-50';
         const totalPrice = (parseFloat(expense.price) || 0) * (parseInt(expense.quantity) || 1);
-        const formattedDate = expense.purchaseDate ? new Date(expense.purchaseDate).toLocaleDateString('zh-CN') : '';
+        const formattedDate = this.formatDate(expense.purchaseDate);
 
         row.innerHTML =
-          '<td class="px-2 py-3 whitespace-nowrap">' + expense.category + '</td>' +
-          '<td class="px-2 py-3 whitespace-nowrap">' + expense.area + '</td>' +
-          '<td class="px-2 py-3">' + expense.name + '</td>' +
-          '<td class="px-2 py-3 whitespace-nowrap">' + (expense.brand || '-') + '</td>' +
-          '<td class="px-2 py-3 whitespace-nowrap">' + (expense.model || '-') + '</td>' +
-          '<td class="px-2 py-3 whitespace-nowrap"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' + this.getStatusBadgeClass(expense.status) + '">' + expense.status + '</span></td>' +
-          '<td class="px-2 py-3 whitespace-nowrap">' + expense.channel + '</td>' +
-          '<td class="px-2 py-3 whitespace-nowrap">¥' + parseFloat(expense.price).toFixed(2) + ' / ' + expense.quantity + '</td>' +
-          '<td class="px-2 py-3 whitespace-nowrap font-medium">¥' + totalPrice.toFixed(2) + '</td>' +
-          '<td class="px-2 py-3 whitespace-nowrap">' + (expense.imageUrl ? '<button class="text-primary hover:text-primary/80 preview-image-btn" data-image="' + expense.imageUrl + '"><i class="fa fa-image"></i></button>' : '-') + '</td>' +
-          '<td class="px-2 py-3 max-w-[120px] truncate" title="' + (expense.notes || '') + '">' + (expense.notes || '-') + '</td>' +
+          '<td class="px-2 py-3 whitespace-nowrap">' + this.escapeHtml(expense.category || '-') + '</td>' +
+          '<td class="px-2 py-3 whitespace-nowrap">' + this.escapeHtml(expense.area || '-') + '</td>' +
+          '<td class="px-2 py-3">' + this.escapeHtml(expense.name || '-') + '</td>' +
+          '<td class="px-2 py-3 whitespace-nowrap">' + this.escapeHtml(expense.brand || '-') + '</td>' +
+          '<td class="px-2 py-3 whitespace-nowrap">' + this.escapeHtml(expense.model || '-') + '</td>' +
+          '<td class="px-2 py-3 whitespace-nowrap"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' + this.getStatusBadgeClass(expense.status) + '">' + this.escapeHtml(expense.status || '-') + '</span></td>' +
+          '<td class="px-2 py-3 whitespace-nowrap">' + this.escapeHtml(expense.channel || '-') + '</td>' +
+          '<td class="px-2 py-3 whitespace-nowrap money-nums">' + this.formatCurrency(parseFloat(expense.price) || 0) + ' / ' + this.escapeHtml(expense.quantity || '1') + '</td>' +
+          '<td class="px-2 py-3 whitespace-nowrap font-medium money-nums">' + this.formatCurrency(totalPrice) + '</td>' +
+          '<td class="px-2 py-3 whitespace-nowrap">' + (expense.imageUrl ? '<button type="button" aria-label="预览图片" class="text-primary hover:text-primary/80 preview-image-btn focus-ring rounded" data-image="' + this.escapeHtml(expense.imageUrl) + '"><i class="fa fa-image" aria-hidden="true"></i></button>' : '-') + '</td>' +
+          '<td class="px-2 py-3 max-w-[120px] truncate" title="' + this.escapeHtml(expense.notes || '') + '">' + this.escapeHtml(expense.notes || '-') + '</td>' +
           '<td class="px-2 py-3 whitespace-nowrap"><div class="flex space-x-1">' +
-            '<button class="p-1 text-neutral-600 hover:text-primary edit-btn" data-id="' + expense.id + '"><i class="fa fa-pencil"></i></button>' +
-            '<button class="p-1 text-neutral-600 hover:text-danger delete-btn" data-id="' + expense.id + '"><i class="fa fa-trash"></i></button>' +
+            '<button type="button" aria-label="编辑记录" class="p-1 text-neutral-600 hover:text-primary edit-btn focus-ring rounded" data-id="' + this.escapeHtml(expense.id) + '"><i class="fa fa-pencil" aria-hidden="true"></i></button>' +
+            '<button type="button" aria-label="删除记录" class="p-1 text-neutral-600 hover:text-danger delete-btn focus-ring rounded" data-id="' + this.escapeHtml(expense.id) + '"><i class="fa fa-trash" aria-hidden="true"></i></button>' +
           '</div></td>';
 
-        expenseList.appendChild(row);
+        if (expenseList) expenseList.appendChild(row);
+        if (expenseCards) expenseCards.appendChild(this.createExpenseCard(expense, totalPrice, formattedDate));
       });
 
       // 绑定行内按钮
@@ -424,10 +453,75 @@ const UIController = {
     }
   },
 
+  createExpenseCard(expense, totalPrice, formattedDate) {
+    const card = document.createElement('article');
+    card.className = 'border border-neutral-200 rounded-lg p-4 bg-white';
+    card.innerHTML =
+      '<div class="flex items-start justify-between gap-3">' +
+        '<div class="min-w-0">' +
+          '<h3 class="font-semibold text-neutral-900 truncate">' + this.escapeHtml(expense.name || '-') + '</h3>' +
+          '<p class="text-sm text-neutral-500 mt-1">' + this.escapeHtml(expense.category || '-') + ' · ' + this.escapeHtml(expense.area || '-') + '</p>' +
+        '</div>' +
+        '<p class="font-bold text-primary money-nums whitespace-nowrap">' + this.formatCurrency(totalPrice) + '</p>' +
+      '</div>' +
+      '<div class="mt-3 flex flex-wrap gap-2 text-xs">' +
+        '<span class="inline-flex items-center px-2 py-1 rounded-full ' + this.getStatusBadgeClass(expense.status) + '">' + this.escapeHtml(expense.status || '-') + '</span>' +
+        '<span class="inline-flex items-center px-2 py-1 rounded-full bg-neutral-100 text-neutral-600">' + this.escapeHtml(expense.channel || '-') + '</span>' +
+        '<span class="inline-flex items-center px-2 py-1 rounded-full bg-neutral-100 text-neutral-600">' + this.escapeHtml(formattedDate || '-') + '</span>' +
+      '</div>' +
+      '<div class="mt-3 flex items-center justify-between gap-3">' +
+        '<p class="text-sm text-neutral-500 truncate">' + this.escapeHtml(expense.brand || expense.model || expense.notes || '暂无备注') + '</p>' +
+        '<div class="flex items-center gap-2 shrink-0">' +
+          (expense.imageUrl ? '<button type="button" aria-label="预览图片" class="p-2 text-primary hover:bg-primary/5 rounded-lg preview-image-btn focus-ring" data-image="' + this.escapeHtml(expense.imageUrl) + '"><i class="fa fa-image" aria-hidden="true"></i></button>' : '') +
+          '<button type="button" aria-label="编辑记录" class="p-2 text-neutral-600 hover:text-primary hover:bg-primary/5 rounded-lg edit-btn focus-ring" data-id="' + this.escapeHtml(expense.id) + '"><i class="fa fa-pencil" aria-hidden="true"></i></button>' +
+          '<button type="button" aria-label="删除记录" class="p-2 text-neutral-600 hover:text-danger hover:bg-red-50 rounded-lg delete-btn focus-ring" data-id="' + this.escapeHtml(expense.id) + '"><i class="fa fa-trash" aria-hidden="true"></i></button>' +
+        '</div>' +
+      '</div>';
+    return card;
+  },
+
+  updateSummary(expenses, totalExpense) {
+    const pendingCount = expenses.filter(expense => !['已验收', '已退货'].includes(expense.status)).length;
+    const latestDate = expenses
+      .map(expense => expense.purchaseDate || expense.date)
+      .filter(Boolean)
+      .sort((a, b) => new Date(b) - new Date(a))[0];
+
+    this.setText('summaryTotalAmount', this.formatCurrency(totalExpense));
+    this.setText('summaryRecordCount', String(expenses.length));
+    this.setText('summaryPendingCount', String(pendingCount));
+    this.setText('summaryLatestDate', latestDate ? this.formatDate(latestDate) : '-');
+  },
+
+  setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  },
+
+  formatCurrency(value) {
+    return this.currencyFormatter.format(Number(value) || 0);
+  },
+
+  formatDate(value) {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return this.dateFormatter.format(date);
+  },
+
+  escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  },
+
   getStatusBadgeClass(status) {
     switch (status) {
       case '已下单': return 'bg-blue-100 text-blue-800';
-      case '已到货': return 'bg-purple-100 text-purple-800';
+      case '已到货': return 'bg-amber-100 text-amber-800';
       case '已安装': return 'bg-green-100 text-green-800';
       case '已验收': return 'bg-teal-100 text-teal-800';
       case '已退货': return 'bg-red-100 text-red-800';
@@ -635,7 +729,7 @@ const UIController = {
       ];
 
       const totalAmount = data.reduce((sum, amount) => sum + amount, 0);
-      totalAmountElement.textContent = '¥' + totalAmount.toFixed(2);
+      totalAmountElement.textContent = this.formatCurrency(totalAmount);
 
       if (this.chartInstance) this.chartInstance.destroy();
 
@@ -661,7 +755,7 @@ const UIController = {
                   const label = context.label || '';
                   const value = context.parsed;
                   const percentage = ((value / totalAmount) * 100).toFixed(1);
-                  return label + ': ¥' + value.toFixed(2) + ' (' + percentage + '%)';
+                  return label + ': ' + UIController.formatCurrency(value) + ' (' + percentage + '%)';
                 }
               }
             }
@@ -673,7 +767,7 @@ const UIController = {
       let legendHtml = '';
       for (let i = 0; i < labels.length; i++) {
         const percentage = ((data[i] / totalAmount) * 100).toFixed(1);
-        legendHtml += '<div class="flex items-center mb-1"><div class="w-3 h-3 rounded-full mr-2" style="background-color: ' + backgroundColor[i] + '"></div><span class="text-sm flex-1 truncate">' + labels[i] + '</span><span class="text-sm text-right">¥' + data[i].toFixed(2) + '</span></div>';
+        legendHtml += '<div class="flex items-center mb-1"><div class="w-3 h-3 rounded-full mr-2" style="background-color: ' + backgroundColor[i] + '"></div><span class="text-sm flex-1 truncate">' + this.escapeHtml(labels[i]) + '</span><span class="text-sm text-right money-nums">' + this.formatCurrency(data[i]) + '</span></div>';
       }
       chartLegendElement.innerHTML = legendHtml;
     } catch (error) {
@@ -687,12 +781,14 @@ const UIController = {
     const categoryFilter = document.getElementById('categoryFilter');
     const areaFilter = document.getElementById('areaFilter');
     const statusFilter = document.getElementById('statusFilter');
+    const sortFilter = document.getElementById('sortFilter');
     const searchInput = document.getElementById('searchInput');
 
     return {
       category: categoryFilter ? categoryFilter.value : 'all',
       area: areaFilter ? areaFilter.value : 'all',
       status: statusFilter ? statusFilter.value : 'all',
+      sortBy: sortFilter ? sortFilter.value : 'date_desc',
       searchTerm: searchInput ? searchInput.value : ''
     };
   }

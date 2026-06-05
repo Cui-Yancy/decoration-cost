@@ -12,26 +12,19 @@ const ImportExport = {
       migrated.id = this.generateId();
     }
 
-    if (targetStore === 'expenses') {
-      if (!migrated.area) migrated.area = '未指定';
-      if (!migrated.price) migrated.price = '0';
-      if (!migrated.quantity) migrated.quantity = '1';
-      if (migrated.amount && !migrated.price) {
-        migrated.price = String(migrated.amount);
-      }
-      if (!migrated.purchaseDate && migrated.date) {
-        migrated.purchaseDate = migrated.date;
-      }
-      if (!migrated.date && migrated.purchaseDate) {
-        migrated.date = migrated.purchaseDate;
-      }
-      migrated.amount = (parseFloat(migrated.price) || 0) * (parseInt(migrated.quantity) || 1);
-    } else if (targetStore === 'notes') {
-      if (!migrated.phase) migrated.phase = '未分类';
-      if (!migrated.location) migrated.location = '未指定';
-      if (!migrated.priority) migrated.priority = '中';
-      if (!migrated.status) migrated.status = '待处理';
+    if (!migrated.area) migrated.area = '未指定';
+    if (!migrated.price) migrated.price = '0';
+    if (!migrated.quantity) migrated.quantity = '1';
+    if (migrated.amount && !migrated.price) {
+      migrated.price = String(migrated.amount);
     }
+    if (!migrated.purchaseDate && migrated.date) {
+      migrated.purchaseDate = migrated.date;
+    }
+    if (!migrated.date && migrated.purchaseDate) {
+      migrated.date = migrated.purchaseDate;
+    }
+    migrated.amount = (parseFloat(migrated.price) || 0) * (parseInt(migrated.quantity) || 1);
 
     return migrated;
   },

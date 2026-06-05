@@ -24,12 +24,6 @@ def init_db():
         notes TEXT, date TEXT, amount REAL, createdAt TEXT,
         updatedAt TEXT, _schemaVersion INTEGER DEFAULT 1
     )''')
-    db.execute('''CREATE TABLE IF NOT EXISTS notes (
-        id TEXT PRIMARY KEY, title TEXT, phase TEXT, location TEXT,
-        priority TEXT, description TEXT, status TEXT, date TEXT,
-        imageUrl TEXT, createdAt TEXT, updatedAt TEXT,
-        _schemaVersion INTEGER DEFAULT 1
-    )''')
     db.commit()
     db.close()
 
@@ -54,12 +48,10 @@ def parse_json_fields(record):
 def api_status():
     db = get_db()
     expense_count = db.execute('SELECT COUNT(*) FROM expenses').fetchone()[0]
-    note_count = db.execute('SELECT COUNT(*) FROM notes').fetchone()[0]
     db.close()
     return jsonify({
         'database': DATABASE,
-        'expenses': expense_count,
-        'notes': note_count
+        'expenses': expense_count
     })
 
 @app.route('/')
@@ -157,73 +149,6 @@ def clear_expenses():
     db.close()
     return jsonify({'success': True})
 
-# --- 注意事项 API ---
-
-@app.route('/api/notes', methods=['GET'])
-def get_notes():
-    db = get_db()
-    rows = db.execute('SELECT * FROM notes ORDER BY id DESC').fetchall()
-    db.close()
-    return jsonify([row_to_dict(r) for r in rows])
-
-@app.route('/api/notes', methods=['POST'])
-def create_note():
-    record = request.get_json()
-    if not record or not record.get('id'):
-        return jsonify({'error': '缺少 id'}), 400
-
-    record.setdefault('_schemaVersion', 1)
-    record.setdefault('createdAt', datetime.now().isoformat())
-
-    db = get_db()
-    columns = ', '.join(record.keys())
-    placeholders = ', '.join(['?' for _ in record])
-    db.execute(f'INSERT OR REPLACE INTO notes ({columns}) VALUES ({placeholders})', list(record.values()))
-    db.commit()
-    db.close()
-    return jsonify(record), 201
-
-@app.route('/api/notes/<record_id>', methods=['PUT'])
-def update_note(record_id):
-    record = request.get_json()
-    if not record:
-        return jsonify({'error': '无数据'}), 400
-
-    record['updatedAt'] = datetime.now().isoformat()
-    record['id'] = record_id
-
-    db = get_db()
-    set_clause = ', '.join([f'{k}=?' for k in record.keys()])
-    db.execute(f'INSERT OR REPLACE INTO notes ({", ".join(record.keys())}) VALUES ({", ".join(["?" for _ in record])})', list(record.values()))
-    db.commit()
-    db.close()
-    return jsonify(record)
-
-@app.route('/api/notes/<record_id>', methods=['GET'])
-def get_note(record_id):
-    db = get_db()
-    row = db.execute('SELECT * FROM notes WHERE id=?', (record_id,)).fetchone()
-    db.close()
-    if row is None:
-        return jsonify({'error': '未找到'}), 404
-    return jsonify(row_to_dict(row))
-
-@app.route('/api/notes/<record_id>', methods=['DELETE'])
-def delete_note(record_id):
-    db = get_db()
-    db.execute('DELETE FROM notes WHERE id=?', (record_id,))
-    db.commit()
-    db.close()
-    return jsonify({'success': True})
-
-@app.route('/api/notes', methods=['DELETE'])
-def clear_notes():
-    db = get_db()
-    db.execute('DELETE FROM notes')
-    db.commit()
-    db.close()
-    return jsonify({'success': True})
-
 # --- 批量导入（从JSON迁移） ---
 
 @app.route('/api/migrate/expenses', methods=['POST'])
@@ -250,29 +175,6 @@ def migrate_expenses():
     db.close()
     return jsonify({'imported': imported})
 
-@app.route('/api/migrate/notes', methods=['POST'])
-def migrate_notes():
-    records = request.get_json()
-    if not isinstance(records, list):
-        return jsonify({'error': '需要 JSON 数组'}), 400
-
-    db = get_db()
-    existing = {r['id'] for r in db.execute('SELECT id FROM notes').fetchall()}
-    imported = 0
-    for r in records:
-        if r.get('id') in existing:
-            continue
-        r.setdefault('_schemaVersion', 1)
-        r.setdefault('createdAt', datetime.now().isoformat())
-        columns = ', '.join(r.keys())
-        placeholders = ', '.join(['?' for _ in r])
-        db.execute(f'INSERT INTO notes ({columns}) VALUES ({placeholders})', list(r.values()))
-        existing.add(r['id'])
-        imported += 1
-    db.commit()
-    db.close()
-    return jsonify({'imported': imported})
-
 def import_json_file(filepath, store_type=None):
     """从 JSON 文件导入数据到 SQLite"""
     with open(filepath, 'r', encoding='utf-8') as f:
@@ -282,21 +184,19 @@ def import_json_file(filepath, store_type=None):
         print('错误: JSON 文件应包含非空数组')
         return
 
-    # 自动检测类型：有 category 字段 → expenses，有 title 字段 → notes
+    # 自动检测类型：当前版本只导入支出记录
     if store_type is None:
         sample = records[0]
         if 'category' in sample or 'price' in sample or 'brand' in sample:
             store_type = 'expenses'
-        elif 'title' in sample or 'phase' in sample:
-            store_type = 'notes'
         else:
-            print('错误: 无法自动识别数据类型，请用 --type expenses 或 --type notes 指定')
+            print('错误: 无法自动识别支出记录，请确认 JSON 包含 category、price 或 brand 字段')
             return
 
     print(f'检测到数据类型: {store_type}，共 {len(records)} 条记录')
 
     db = get_db()
-    table = 'expenses' if store_type == 'expenses' else 'notes'
+    table = 'expenses'
     existing = {r['id'] for r in db.execute(f'SELECT id FROM {table}').fetchall()}
     imported = 0
     skipped = 0
@@ -306,8 +206,7 @@ def import_json_file(filepath, store_type=None):
             skipped += 1
             continue
 
-        if store_type == 'expenses':
-            r = parse_json_fields(r)
+        r = parse_json_fields(r)
 
         r.setdefault('_schemaVersion', 1)
         r.setdefault('createdAt', datetime.now().isoformat())
@@ -332,8 +231,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='装修管家服务')
     parser.add_argument('--import', dest='import_file', metavar='FILE.json',
                         help='导入旧版 JSON 数据到数据库')
-    parser.add_argument('--type', dest='import_type', choices=['expenses', 'notes'],
-                        help='数据类型 (自动检测)')
+    parser.add_argument('--type', dest='import_type', choices=['expenses'],
+                        help='数据类型 (当前支持 expenses，默认自动检测)')
     parser.add_argument('--host', default='0.0.0.0', help='服务监听地址 (默认: 0.0.0.0)')
     parser.add_argument('--port', type=int, default=5000, help='服务端口 (默认: 5000)')
     parser.add_argument('--debug', action='store_true', help='开启 Flask 调试模式')

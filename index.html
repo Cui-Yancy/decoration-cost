@@ -3,80 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>装修管家 - 首页</title>
+  <title>装修支出管家</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="css/shared.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="js/shared-config.js"></script>
 </head>
-<body class="bg-gradient-to-br from-amber-50 to-orange-50 text-neutral-800 min-h-screen relative overflow-hidden">
-  <!-- 暖色调背景装饰 -->
-  <div class="absolute inset-0 z-0">
-    <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGZpbGw9IiNmOWU2YzAiIGQ9Ik0wIDUwSDUwVjBIMHoiLz48cGF0aCBzdHJva2U9IiNlYmNiYSIgc3Ryb2tlLXdpZHRoPSIxIiBkPSJNMTAgMTBtMTAtMXYxTTMwIDEwbTktOXptMS0xIDkgOVYxSDIwTTAgMTBoMXYxMEgweiIvPjxwYXRoIHN0cm9rZT0iI2ViY2JhIiBzdHJva2Utd2lkdGg9IjEiIGQ9Ik01IDVIMHYxSDVWMVY1WiIgLz48L2c+PC9zdmc+')]"></div>
-  </div>
+<body class="app-surface text-neutral-800 min-h-screen">
   <div class="flex flex-col min-h-screen">
-    <!-- 导航栏 -->
-    <header class="bg-white border-b border-neutral-200 sticky top-0 z-30">
+    <header class="bg-white/95 border-b border-neutral-200 sticky top-0 z-30 backdrop-blur">
       <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-        <div class="flex items-center space-x-2">
-          <i class="fa fa-home text-primary text-2xl"></i>
-          <h1 class="text-xl font-bold text-neutral-800">装修管家</h1>
-        </div>
+        <a href="index.html" class="flex items-center gap-2 focus-ring rounded-lg">
+          <span class="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center">
+            <i class="fa fa-home" aria-hidden="true"></i>
+          </span>
+          <span>
+            <span class="block text-lg font-bold text-neutral-900">装修支出管家</span>
+            <span class="block text-xs text-neutral-500">预算、采购、安装，一处记录</span>
+          </span>
+        </a>
 
-        <div class="flex items-center space-x-4">
-          <a href="cost.html" class="px-4 py-2 rounded-lg bg-white text-primary border border-primary font-medium hover:bg-primary/5 transition-colors">支出记录</a>
-          <a href="note.html" class="px-4 py-2 rounded-lg bg-white text-primary border border-primary font-medium hover:bg-primary/5 transition-colors">注意事项</a>
-          <button class="text-neutral-500 hover:text-neutral-700 p-2 rounded-full hover:bg-neutral-100 transition-colors">
-            <i class="fa fa-question-circle"></i>
-          </button>
-        </div>
+        <nav class="flex items-center gap-2" aria-label="主导航">
+          <a href="cost.html" class="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors focus-ring">支出管理</a>
+        </nav>
       </div>
     </header>
 
-    <!-- 主要内容 -->
-    <main class="flex-grow container mx-auto px-4 py-10 relative z-10">
-      <div class="max-w-3xl mx-auto text-center">
-        <h2 class="text-[clamp(2rem,5vw,3rem)] font-bold text-neutral-800 mb-4">
-          轻松管理装修全流程
-        </h2>
-        <p class="text-lg text-neutral-600 mb-12">
-          记录支出、追踪注意事项，让您的装修过程井然有序
-        </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <!-- 支出记录卡片 -->
-          <div class="bg-white/90 backdrop-blur-sm rounded-xl p-6 card-shadow card-hover transition-all duration-300 group">
-            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto group-hover:bg-primary/20 transition-colors">
-              <i class="fa fa-money text-primary text-3xl"></i>
-            </div>
-            <h3 class="text-xl font-semibold mb-2 text-neutral-800">支出记录</h3>
-            <p class="text-neutral-600 mb-6">记录和管理装修过程中的各项支出，轻松掌握预算使用情况</p>
-            <a href="cost.html" class="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-all transform hover:translate-y-[-1px] active:translate-y-0 shadow-md hover:shadow-lg">
-              进入支出记录
-              <i class="fa fa-arrow-right ml-2"></i>
+    <main class="flex-grow container mx-auto px-4 py-8">
+      <section class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-6 items-stretch">
+        <div class="bg-white border border-neutral-200 rounded-lg p-6 md:p-8 card-shadow">
+          <p class="text-sm font-medium text-primary mb-3">装修支出管理</p>
+          <h1 class="text-3xl md:text-4xl font-bold text-neutral-900 mb-4 text-balance">
+            把每一笔装修花费记清楚
+          </h1>
+          <p class="text-neutral-600 leading-7 mb-6 max-w-2xl">
+            记录采购、区域、状态、渠道和图片凭证，随时查看总支出、分类占比和待跟进项目。
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <a href="cost.html" class="inline-flex items-center justify-center px-5 py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors focus-ring">
+              进入支出管理
+              <i class="fa fa-arrow-right ml-2" aria-hidden="true"></i>
             </a>
-          </div>
-
-          <!-- 注意事项卡片 -->
-          <div class="bg-white/90 backdrop-blur-sm rounded-xl p-6 card-shadow card-hover transition-all duration-300 group">
-            <div class="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mb-4 mx-auto group-hover:bg-secondary/20 transition-colors">
-              <i class="fa fa-sticky-note-o text-secondary text-3xl"></i>
-            </div>
-            <h3 class="text-xl font-semibold mb-2 text-neutral-800">注意事项</h3>
-            <p class="text-neutral-600 mb-6">记录装修过程中的重要事项和提醒，确保装修质量和进度</p>
-            <a href="note.html" class="inline-flex items-center px-6 py-3 bg-secondary hover:bg-secondary/90 text-white font-medium rounded-lg transition-all transform hover:translate-y-[-1px] active:translate-y-0 shadow-md hover:shadow-lg">
-              进入注意事项
-              <i class="fa fa-arrow-right ml-2"></i>
+            <a href="cost.html#expenseForm" class="inline-flex items-center justify-center px-5 py-3 rounded-lg border border-neutral-300 bg-white text-neutral-700 font-medium hover:bg-neutral-50 transition-colors focus-ring">
+              添加支出
             </a>
           </div>
         </div>
-      </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-white border border-neutral-200 rounded-lg p-5 card-shadow">
+            <div class="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-4">
+              <i class="fa fa-calculator" aria-hidden="true"></i>
+            </div>
+            <p class="text-sm text-neutral-500">总额统计</p>
+            <p class="text-lg font-semibold text-neutral-900 mt-1">自动汇总</p>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-5 card-shadow">
+            <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
+              <i class="fa fa-pie-chart" aria-hidden="true"></i>
+            </div>
+            <p class="text-sm text-neutral-500">分类占比</p>
+            <p class="text-lg font-semibold text-neutral-900 mt-1">图表查看</p>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-5 card-shadow">
+            <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center mb-4">
+              <i class="fa fa-truck" aria-hidden="true"></i>
+            </div>
+            <p class="text-sm text-neutral-500">采购状态</p>
+            <p class="text-lg font-semibold text-neutral-900 mt-1">跟进到货</p>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-lg p-5 card-shadow">
+            <div class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center mb-4">
+              <i class="fa fa-picture-o" aria-hidden="true"></i>
+            </div>
+            <p class="text-sm text-neutral-500">凭证图片</p>
+            <p class="text-lg font-semibold text-neutral-900 mt-1">支持粘贴</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mt-6 bg-white border border-neutral-200 rounded-lg p-5 card-shadow">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-semibold text-neutral-900">建议工作流</h2>
+            <p class="text-sm text-neutral-500 mt-1">先记录加购，再跟进下单、到货、安装和验收。</p>
+          </div>
+          <div class="flex flex-wrap gap-2 text-sm">
+            <span class="px-3 py-1 rounded-full bg-neutral-100 text-neutral-700">已加购</span>
+            <span class="px-3 py-1 rounded-full bg-blue-100 text-blue-700">已下单</span>
+            <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-700">已到货</span>
+            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700">已验收</span>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <!-- 页脚 -->
     <footer class="bg-white border-t border-neutral-200 py-4 mt-auto">
       <div class="container mx-auto px-4 text-center text-neutral-500 text-sm">
-        <p>装修管家 &copy; 2024 | 版本号: v2.0.0</p>
+        <p>装修支出管家 &copy; 2026 | v2.1.0</p>
       </div>
     </footer>
   </div>
