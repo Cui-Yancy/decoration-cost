@@ -25,12 +25,7 @@
           </span>
         </a>
 
-        <div class="flex items-center space-x-2">
-          <a href="cost.html" class="hidden sm:inline-flex px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors focus-ring">支出管理</a>
-          <button type="button" aria-label="帮助" class="text-neutral-500 hover:text-neutral-700 p-2 rounded-full hover:bg-neutral-100 transition-colors focus-ring">
-            <i class="fa fa-question-circle" aria-hidden="true"></i>
-          </button>
-        </div>
+        <div></div>
       </div>
     </header>
 
@@ -60,13 +55,14 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
           <!-- 左侧：添加支出表单 -->
           <div class="lg:col-span-3 lg:pr-4">
-            <div class="bg-white border border-neutral-200 rounded-lg p-5 card-shadow lg:sticky lg:top-24">
-              <h2 class="text-lg md:text-xl font-semibold mb-4 flex items-center text-neutral-700">
+            <div class="bg-white border border-neutral-200 rounded-lg p-5 card-shadow lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:flex lg:flex-col">
+              <h2 class="text-lg md:text-xl font-semibold mb-4 flex items-center text-neutral-700 shrink-0">
                 <i class="fa fa-plus-circle text-primary mr-2"></i>添加支出项目
               </h2>
 
-              <form id="expenseForm" class="space-y-4">
-                <div>
+              <form id="expenseForm" class="lg:min-h-0 lg:flex lg:flex-1 lg:flex-col">
+                <div class="space-y-4 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1 lg:pb-4">
+                  <div>
                   <label for="category" class="block text-sm font-medium text-neutral-600 mb-1">类别</label>
                   <select id="category" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
                     <option value="地板">地板</option>
@@ -182,9 +178,10 @@
                   <label for="notes" class="block text-sm font-medium text-neutral-600 mb-1">备注 (可选)</label>
                   <textarea id="notes" rows="3" placeholder="添加备注信息…"
                     class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all"></textarea>
+                  </div>
                 </div>
 
-                <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2.5 px-4 rounded-lg transition-all flex items-center justify-center transform hover:translate-y-[-1px] active:translate-y-0 shadow-md hover:shadow-lg">
+                <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center shadow-md mt-4 shrink-0">
                   <i class="fa fa-save mr-2"></i>保存记录
                 </button>
               </form>
@@ -234,10 +231,18 @@
                     <button type="button" id="importData" class="px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all inline-flex items-center whitespace-nowrap">
                       <i class="fa fa-download mr-1"></i> 导入数据
                     </button>
-                    <button type="button" id="clearAllRecords" class="px-3 py-1.5 border border-danger rounded-lg text-sm input-focus transition-all inline-flex items-center whitespace-nowrap text-danger hover:bg-danger/5">
-                      <i class="fa fa-trash mr-1"></i> 清空所有记录
-                    </button>
                     <input type="file" id="fileInput" accept=".json" class="hidden">
+                  </div>
+
+                  <div class="relative">
+                    <button type="button" id="moreActionsButton" aria-label="更多操作" aria-expanded="false" aria-controls="moreActionsMenu" class="w-9 h-9 border border-neutral-300 rounded-lg text-neutral-600 hover:bg-neutral-50 transition-colors inline-flex items-center justify-center focus-ring">
+                      <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                    </button>
+                    <div id="moreActionsMenu" class="hidden absolute right-0 top-11 z-20 w-44 bg-white border border-neutral-200 rounded-lg shadow-lg p-1">
+                      <button type="button" id="clearAllRecords" class="w-full px-3 py-2 text-left text-sm text-danger hover:bg-red-50 rounded-md transition-colors inline-flex items-center">
+                        <i class="fa fa-trash mr-2" aria-hidden="true"></i>清空所有记录
+                      </button>
+                    </div>
                   </div>
 
                   <div class="relative w-full sm:w-auto">

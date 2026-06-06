@@ -242,8 +242,26 @@ const UIController = {
 
     const clearAllBtn = document.getElementById('clearAllRecords');
     if (clearAllBtn) {
-      clearAllBtn.addEventListener('click', () => this.openConfirmClearModal());
+      clearAllBtn.addEventListener('click', () => {
+        this.closeMoreActionsMenu();
+        this.openConfirmClearModal();
+      });
     }
+    const moreActionsBtn = document.getElementById('moreActionsButton');
+    if (moreActionsBtn) {
+      moreActionsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggleMoreActionsMenu();
+      });
+    }
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('moreActionsMenu');
+      const button = document.getElementById('moreActionsButton');
+      if (!menu || !button || menu.classList.contains('hidden')) return;
+      if (!menu.contains(e.target) && !button.contains(e.target)) {
+        this.closeMoreActionsMenu();
+      }
+    });
     const cancelClearBtn = document.getElementById('cancelClearAll');
     if (cancelClearBtn) {
       cancelClearBtn.addEventListener('click', () => this.closeConfirmClearModal());
@@ -663,6 +681,22 @@ const UIController = {
 
   openConfirmClearModal() {
     ModalUtils.open('confirmClearModal', 'confirmClearModalContent');
+  },
+
+  toggleMoreActionsMenu() {
+    const menu = document.getElementById('moreActionsMenu');
+    const button = document.getElementById('moreActionsButton');
+    if (!menu || !button) return;
+
+    const isHidden = menu.classList.toggle('hidden');
+    button.setAttribute('aria-expanded', String(!isHidden));
+  },
+
+  closeMoreActionsMenu() {
+    const menu = document.getElementById('moreActionsMenu');
+    const button = document.getElementById('moreActionsButton');
+    if (menu) menu.classList.add('hidden');
+    if (button) button.setAttribute('aria-expanded', 'false');
   },
 
   closeConfirmClearModal() {
