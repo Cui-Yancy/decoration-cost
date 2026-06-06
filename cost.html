@@ -13,74 +13,99 @@
 <body class="app-surface text-neutral-800 min-h-screen">
   <div class="flex flex-col min-h-screen">
     <!-- 导航栏 -->
-    <header class="bg-white border-b border-neutral-200 sticky top-0 z-30">
-      <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+    <header class="app-header sticky top-0 z-30">
+      <div class="container mx-auto max-w-[1600px] px-4 sm:px-6 py-3 flex justify-between items-center">
         <a href="index.html" class="flex items-center space-x-2 focus-ring rounded-lg">
-          <span class="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center">
+          <span class="brand-mark w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center">
             <i class="fa fa-home" aria-hidden="true"></i>
           </span>
           <span>
-            <span class="block text-lg font-bold text-neutral-900">装修支出管家</span>
+            <span class="block text-base sm:text-lg font-bold tracking-tight text-neutral-900">装修支出管家</span>
             <span class="hidden sm:block text-xs text-neutral-500">支出、采购和安装状态</span>
           </span>
         </a>
 
-        <div></div>
+        <nav aria-label="主导航">
+          <a href="index.html" class="min-h-[44px] inline-flex items-center px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold text-neutral-600 hover:text-primary hover:bg-blue-50 transition-colors focus-ring">
+            <i class="fa fa-arrow-left mr-2" aria-hidden="true"></i>
+            返回首页
+          </a>
+        </nav>
       </div>
     </header>
 
     <!-- 主要内容 -->
-    <main class="flex-grow container mx-auto px-4 py-6">
+    <main class="flex-grow container mx-auto max-w-[1600px] px-4 sm:px-6 py-6 sm:py-8">
       <!-- 支出记录模块 -->
       <div id="expenseModule" class="module-container">
-        <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 mb-4" aria-label="支出总览">
-          <div class="bg-white border border-neutral-200 rounded-lg p-4 card-shadow min-w-0">
-            <p class="text-xs text-neutral-500 mb-2">总支出</p>
-            <p id="summaryTotalAmount" class="text-2xl font-bold text-primary money-nums">¥0.00</p>
+        <div class="mb-5 sm:mb-6">
+          <p class="section-kicker text-xs font-bold text-primary mb-2">费用概览</p>
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+            <div>
+              <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900">支出管理</h1>
+              <p class="mt-2 text-sm sm:text-base text-neutral-600">记录装修花费，跟进采购状态，并快速查找每一笔项目。</p>
+            </div>
+            <a href="#expenseForm" class="lg:hidden min-h-[44px] inline-flex items-center justify-center px-4 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:bg-primary/90 transition-colors focus-ring">
+              <i class="fa fa-plus mr-2" aria-hidden="true"></i>添加支出
+            </a>
           </div>
-          <div class="bg-white border border-neutral-200 rounded-lg p-4 card-shadow min-w-0">
-            <p class="text-xs text-neutral-500 mb-2">记录数</p>
-            <p id="summaryRecordCount" class="text-2xl font-bold text-neutral-900 money-nums">0</p>
+        </div>
+
+        <section class="summary-grid grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-5" aria-label="支出总览">
+          <div class="summary-card summary-card-primary surface-card p-4 sm:p-5 min-w-0">
+            <p class="summary-label mb-2">总支出</p>
+            <p id="summaryTotalAmount" class="summary-value text-xl sm:text-3xl font-bold text-primary money-nums break-words">¥0.00</p>
           </div>
-          <div class="bg-white border border-neutral-200 rounded-lg p-4 card-shadow min-w-0">
-            <p class="text-xs text-neutral-500 mb-2">待跟进</p>
-            <p id="summaryPendingCount" class="text-2xl font-bold text-amber-600 money-nums">0</p>
+          <div class="summary-card surface-card p-4 sm:p-5 min-w-0">
+            <p class="summary-label mb-2">记录数</p>
+            <p id="summaryRecordCount" class="summary-value text-2xl sm:text-3xl font-bold text-neutral-900 money-nums">0</p>
           </div>
-          <div class="bg-white border border-neutral-200 rounded-lg p-4 card-shadow min-w-0">
-            <p class="text-xs text-neutral-500 mb-2">最近采购</p>
-            <p id="summaryLatestDate" class="text-xl sm:text-2xl font-bold text-neutral-900 money-nums break-words">-</p>
+          <div class="summary-card surface-card p-4 sm:p-5 min-w-0">
+            <p class="summary-label mb-2">待跟进</p>
+            <p id="summaryPendingCount" class="summary-value text-2xl sm:text-3xl font-bold text-warning money-nums">0</p>
+          </div>
+          <div class="summary-card surface-card p-4 sm:p-5 min-w-0">
+            <p class="summary-label mb-2">最近采购</p>
+            <p id="summaryLatestDate" class="summary-value text-lg sm:text-2xl font-bold text-neutral-900 money-nums break-words">-</p>
           </div>
         </section>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
           <!-- 左侧：添加支出表单 -->
-          <div class="lg:col-span-3 lg:pr-4">
-            <div class="bg-white border border-neutral-200 rounded-lg p-5 card-shadow lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:flex lg:flex-col">
-              <h2 class="text-lg md:text-xl font-semibold mb-4 flex items-center text-neutral-700 shrink-0">
-                <i class="fa fa-plus-circle text-primary mr-2"></i>添加支出项目
-              </h2>
+          <div class="lg:col-span-4 xl:col-span-3">
+            <div class="surface-card p-5 sm:p-6 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:flex lg:flex-col">
+              <div class="mb-5 shrink-0">
+                <h2 class="text-lg md:text-xl font-semibold tracking-tight flex items-center text-neutral-900">
+                  <span class="w-9 h-9 rounded-lg bg-blue-50 text-primary flex items-center justify-center mr-3">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </span>
+                  添加支出
+                </h2>
+                <p class="mt-2 text-sm text-neutral-500">填写项目、金额和采购进度。</p>
+              </div>
 
-              <form id="expenseForm" class="lg:min-h-0 lg:flex lg:flex-1 lg:flex-col">
-                <div class="space-y-4 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1 lg:pb-4">
+              <form id="expenseForm" class="lg:min-h-0 lg:flex lg:flex-1 lg:flex-col scroll-mt-24">
+                <div class="expense-form-scroll space-y-4 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-2 lg:pb-4">
+                  <p class="form-section-title">项目信息</p>
                   <div>
-                  <label for="category" class="block text-sm font-medium text-neutral-600 mb-1">类别</label>
-                  <select id="category" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
-                    <option value="地板">地板</option>
-                    <option value="墙面">墙面</option>
-                    <option value="门窗">门窗</option>
-                    <option value="厨卫">厨卫</option>
-                    <option value="水电">水电</option>
-                    <option value="家具">家具</option>
-                    <option value="灯具">灯具</option>
-                    <option value="电器" selected>电器</option>
-                    <option value="人工">人工</option>
-                    <option value="其他">其他</option>
-                  </select>
-                </div>
+                    <label for="category" class="block text-sm font-semibold text-neutral-700 mb-1.5">类别</label>
+                    <select id="category" class="form-control w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                      <option value="地板">地板</option>
+                      <option value="墙面">墙面</option>
+                      <option value="门窗">门窗</option>
+                      <option value="厨卫">厨卫</option>
+                      <option value="水电">水电</option>
+                      <option value="家具">家具</option>
+                      <option value="灯具">灯具</option>
+                      <option value="电器" selected>电器</option>
+                      <option value="人工">人工</option>
+                      <option value="其他">其他</option>
+                    </select>
+                  </div>
 
                 <div>
-                  <label for="area" class="block text-sm font-medium text-neutral-600 mb-1">区域</label>
-                  <select id="area" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                  <label for="area" class="block text-sm font-semibold text-neutral-700 mb-1.5">区域</label>
+                  <select id="area" class="form-control w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
                     <option value="客厅">客厅</option>
                     <option value="厨房">厨房</option>
                     <option value="主卧">主卧</option>
@@ -95,26 +120,27 @@
                 </div>
 
                 <div>
-                  <label for="name" class="block text-sm font-medium text-neutral-600 mb-1">名称</label>
+                  <label for="name" class="block text-sm font-semibold text-neutral-700 mb-1.5">名称</label>
                   <input type="text" id="name" placeholder="请输入项目名称"
-                    class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                    class="form-control w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
                 </div>
 
                 <div>
-                  <label for="brand" class="block text-sm font-medium text-neutral-600 mb-1">品牌 (可选)</label>
+                  <label for="brand" class="block text-sm font-semibold text-neutral-700 mb-1.5">品牌 <span class="font-normal text-neutral-400">可选</span></label>
                   <input type="text" id="brand" placeholder="请输入品牌名称"
-                    class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                    class="form-control w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
                 </div>
 
                 <div>
-                  <label for="model" class="block text-sm font-medium text-neutral-600 mb-1">型号 (可选)</label>
+                  <label for="model" class="block text-sm font-semibold text-neutral-700 mb-1.5">型号 <span class="font-normal text-neutral-400">可选</span></label>
                   <input type="text" id="model" placeholder="请输入产品型号"
-                    class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                    class="form-control w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
                 </div>
 
-                <div>
-                  <label for="status" class="block text-sm font-medium text-neutral-600 mb-1">状态</label>
-                  <select id="status" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                <div class="form-section">
+                  <p class="form-section-title">采购与金额</p>
+                  <label for="status" class="block text-sm font-semibold text-neutral-700 mb-1.5">状态</label>
+                  <select id="status" class="form-control w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
                     <option value="已加购">已加购</option>
                     <option value="已下单">已下单</option>
                     <option value="已到货">已到货</option>
@@ -125,8 +151,8 @@
                 </div>
 
                 <div>
-                  <label for="channel" class="block text-sm font-medium text-neutral-600 mb-1">购买渠道</label>
-                  <select id="channel" class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                  <label for="channel" class="block text-sm font-semibold text-neutral-700 mb-1.5">购买渠道</label>
+                  <select id="channel" class="form-control w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
                     <option value="线下实体店">线下实体店</option>
                     <option value="京东" selected>京东</option>
                     <option value="天猫">天猫</option>
@@ -136,37 +162,38 @@
 
                 <div class="grid grid-cols-2 gap-3">
                   <div>
-                    <label for="price" class="block text-sm font-medium text-neutral-600 mb-1">单价</label>
+                    <label for="price" class="block text-sm font-semibold text-neutral-700 mb-1.5">单价</label>
                     <input type="number" id="price" step="0.01" min="0" placeholder="0.00"
-                      class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                      inputmode="decimal" class="form-control w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
                   </div>
                   <div>
-                    <label for="quantity" class="block text-sm font-medium text-neutral-600 mb-1">数量</label>
+                    <label for="quantity" class="block text-sm font-semibold text-neutral-700 mb-1.5">数量</label>
                     <input type="number" id="quantity" step="1" min="1" value="1"
-                      class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                      inputmode="numeric" class="form-control w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
                   </div>
                 </div>
 
                 <div>
-                  <label for="purchaseDate" class="block text-sm font-medium text-neutral-600 mb-1">购买日期</label>
+                  <label for="purchaseDate" class="block text-sm font-semibold text-neutral-700 mb-1.5">购买日期</label>
                   <input type="date" id="purchaseDate"
-                    class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
+                    class="form-control w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all">
                 </div>
 
-                <div>
-                  <label class="block text-sm font-medium text-neutral-600 mb-1">图片 (可选)</label>
-                  <div class="flex space-x-2">
-                    <button type="button" id="selectImageButton" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center whitespace-nowrap">
+                <div class="form-section">
+                  <p class="form-section-title">凭证与备注</p>
+                  <label class="block text-sm font-semibold text-neutral-700 mb-1.5">图片 <span class="font-normal text-neutral-400">可选</span></label>
+                  <div class="mobile-stack flex gap-2">
+                    <button type="button" id="selectImageButton" class="min-h-[44px] bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center whitespace-nowrap focus-ring">
                       <i class="fa fa-upload mr-2"></i>选择图片文件
                     </button>
-                    <div id="imageUploadArea" class="flex-1 border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center bg-neutral-50 cursor-text hover:border-primary transition-colors relative">
+                    <div id="imageUploadArea" class="min-h-[88px] flex-1 border-2 border-dashed border-neutral-300 rounded-lg p-3 text-center bg-neutral-50 cursor-text hover:border-primary hover:bg-blue-50/40 transition-colors relative">
                       <input type="file" id="imageInput" accept="image/*" class="hidden">
                       <div class="py-2">
                         <i class="fa fa-paste text-neutral-400 text-xl mb-2"></i>
                         <p class="text-sm text-neutral-500">点击此处并粘贴图片</p>
                         <p id="imagePreviewText" class="text-xs text-neutral-400 mt-1 hidden">图片已添加</p>
                       </div>
-                      <button type="button" id="deleteImageButton" aria-label="删除图片" class="absolute top-2 right-2 text-neutral-500 hover:text-danger p-1 rounded-full hover:bg-neutral-100 transition-colors hidden focus-ring">
+                      <button type="button" id="deleteImageButton" aria-label="删除图片" class="icon-button absolute top-1 right-1 text-neutral-500 hover:text-danger rounded-full hover:bg-neutral-100 transition-colors hidden focus-ring">
                         <i class="fa fa-times" aria-hidden="true"></i>
                       </button>
                     </div>
@@ -175,13 +202,13 @@
                 </div>
 
                 <div>
-                  <label for="notes" class="block text-sm font-medium text-neutral-600 mb-1">备注 (可选)</label>
+                  <label for="notes" class="block text-sm font-semibold text-neutral-700 mb-1.5">备注 <span class="font-normal text-neutral-400">可选</span></label>
                   <textarea id="notes" rows="3" placeholder="添加备注信息…"
-                    class="w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all"></textarea>
+                    class="form-control w-full px-3 py-2 border border-neutral-300 rounded-lg input-focus transition-all"></textarea>
                   </div>
                 </div>
 
-                <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center shadow-md mt-4 shrink-0">
+                <button type="submit" class="min-h-[48px] w-full bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center shadow-sm mt-4 shrink-0 focus-ring">
                   <i class="fa fa-save mr-2"></i>保存记录
                 </button>
               </form>
@@ -189,64 +216,68 @@
           </div>
 
           <!-- 右侧：统计和支出记录列表 -->
-          <div class="lg:col-span-9">
+          <div class="content-stack lg:col-span-8 xl:col-span-9 flex flex-col gap-5 min-w-0">
             <!-- 统计图表区域 -->
-            <div class="bg-white border border-neutral-200 rounded-lg p-5 mb-4 card-shadow">
-              <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold flex items-center text-neutral-700">
-                  <i class="fa fa-pie-chart text-primary mr-2"></i>支出统计
-                </h2>
-                <div class="flex space-x-2">
-                    <button type="button" id="categoryChartBtn" class="px-3 py-1 text-sm bg-primary text-white rounded-lg focus-ring">类别统计</button>
-                    <button type="button" id="areaChartBtn" class="px-3 py-1 text-sm bg-neutral-100 text-neutral-600 rounded-lg hover:bg-neutral-200 transition-colors focus-ring">区域统计</button>
+            <section class="analytics-panel surface-card p-5 sm:p-6 order-2" aria-labelledby="analyticsTitle">
+              <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-5 gap-3">
+                <div>
+                  <h2 id="analyticsTitle" class="text-lg font-semibold tracking-tight text-neutral-900">支出统计</h2>
+                  <p class="text-sm text-neutral-500 mt-1">查看类别或区域的支出构成。</p>
+                </div>
+                <div class="flex p-1 bg-neutral-100 rounded-lg self-start">
+                  <button type="button" id="categoryChartBtn" class="min-h-[36px] px-3 py-1.5 text-sm font-medium bg-primary text-white rounded-md focus-ring">按类别</button>
+                  <button type="button" id="areaChartBtn" class="min-h-[36px] px-3 py-1.5 text-sm font-medium bg-neutral-100 text-neutral-600 rounded-md hover:bg-neutral-200 transition-colors focus-ring">按区域</button>
                 </div>
               </div>
 
-              <div class="flex flex-col md:flex-row items-center justify-center">
-                <div class="w-full md:w-1/2 flex justify-center">
+              <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                <div class="chart-frame flex justify-center">
                   <canvas id="expenseChart" width="300" height="300"></canvas>
                 </div>
-                <div class="w-full md:w-1/2 p-4">
+                <div class="w-full md:flex-1 md:max-w-xl p-2 sm:p-4">
                   <div class="text-center mb-4">
-                    <p class="text-neutral-500 text-sm">总支出</p>
-                    <p id="totalExpenseAmount" class="text-3xl font-bold text-primary">¥0.00</p>
+                    <p class="text-neutral-500 text-sm font-medium">当前统计总额</p>
+                    <p id="totalExpenseAmount" class="text-2xl sm:text-3xl font-bold tracking-tight text-primary money-nums mt-1">¥0.00</p>
                   </div>
                   <div id="chartLegend" class="space-y-2"></div>
                 </div>
               </div>
-            </div>
+            </section>
 
             <!-- 支出记录列表 -->
-            <div class="bg-white border border-neutral-200 rounded-lg p-5 card-shadow">
-              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
-                <h2 class="text-lg md:text-xl font-semibold flex items-center text-neutral-700">
-                  <i class="fa fa-list-alt text-primary mr-2"></i>支出记录
-                </h2>
+            <section class="records-panel surface-card p-4 sm:p-6 order-1" aria-labelledby="recordsTitle">
+              <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-5 gap-4">
+                <div>
+                  <h2 id="recordsTitle" class="text-lg md:text-xl font-semibold tracking-tight text-neutral-900">支出记录</h2>
+                  <p class="text-sm text-neutral-500 mt-1">筛选、搜索和管理已有项目。</p>
+                </div>
 
-                <div class="w-full sm:w-auto flex flex-col sm:flex-row sm:flex-wrap gap-3">
-                  <div class="flex flex-wrap gap-2">
-                    <button type="button" id="exportData" class="px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all inline-flex items-center whitespace-nowrap">
-                      <i class="fa fa-upload mr-1"></i> 导出数据
+                <div class="w-full xl:w-auto flex flex-col gap-3">
+                  <div class="flex flex-wrap xl:justify-end gap-2">
+                    <button type="button" id="exportData" class="toolbar-control px-3 py-2 border border-neutral-300 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 input-focus transition-all inline-flex items-center whitespace-nowrap">
+                      <i class="fa fa-upload mr-2 text-neutral-400"></i>导出
                     </button>
-                    <button type="button" id="importData" class="px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all inline-flex items-center whitespace-nowrap">
-                      <i class="fa fa-download mr-1"></i> 导入数据
+                    <button type="button" id="importData" class="toolbar-control px-3 py-2 border border-neutral-300 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 input-focus transition-all inline-flex items-center whitespace-nowrap">
+                      <i class="fa fa-download mr-2 text-neutral-400"></i>导入
                     </button>
                     <input type="file" id="fileInput" accept=".json" class="hidden">
-                  </div>
 
-                  <div class="relative">
-                    <button type="button" id="moreActionsButton" aria-label="更多操作" aria-expanded="false" aria-controls="moreActionsMenu" class="w-9 h-9 border border-neutral-300 rounded-lg text-neutral-600 hover:bg-neutral-50 transition-colors inline-flex items-center justify-center focus-ring">
-                      <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-                    </button>
-                    <div id="moreActionsMenu" class="hidden absolute right-0 top-11 z-20 w-44 bg-white border border-neutral-200 rounded-lg shadow-lg p-1">
-                      <button type="button" id="clearAllRecords" class="w-full px-3 py-2 text-left text-sm text-danger hover:bg-red-50 rounded-md transition-colors inline-flex items-center">
-                        <i class="fa fa-trash mr-2" aria-hidden="true"></i>清空所有记录
+                    <div class="relative">
+                      <button type="button" id="moreActionsButton" aria-label="更多操作" aria-expanded="false" aria-controls="moreActionsMenu" class="icon-button border border-neutral-300 rounded-lg text-neutral-600 hover:bg-neutral-50 transition-colors inline-flex items-center justify-center focus-ring">
+                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                       </button>
+                      <div id="moreActionsMenu" class="hidden absolute right-0 top-12 z-20 w-44 bg-white border border-neutral-200 rounded-lg shadow-lg p-1">
+                        <button type="button" id="clearAllRecords" class="min-h-[44px] w-full px-3 py-2 text-left text-sm text-danger hover:bg-red-50 rounded-md transition-colors inline-flex items-center">
+                          <i class="fa fa-trash mr-2" aria-hidden="true"></i>清空所有记录
+                        </button>
+                      </div>
                     </div>
                   </div>
 
-                  <div class="relative w-full sm:w-auto">
-                    <select id="categoryFilter" class="w-full sm:w-auto px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all">
+                  <div class="grid grid-cols-2 md:grid-cols-3 xl:flex gap-2">
+                    <div class="relative min-w-0">
+                      <label for="categoryFilter" class="sr-only">按分类筛选</label>
+                      <select id="categoryFilter" class="toolbar-control w-full xl:w-auto px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-700 input-focus transition-all">
                       <option value="all">全部分类</option>
                       <option value="地板">地板</option>
                       <option value="墙面">墙面</option>
@@ -258,11 +289,12 @@
                       <option value="电器">电器</option>
                       <option value="人工">人工</option>
                       <option value="其他">其他</option>
-                    </select>
-                  </div>
+                      </select>
+                    </div>
 
-                  <div class="relative w-full sm:w-auto">
-                    <select id="areaFilter" class="w-full sm:w-auto px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all">
+                  <div class="relative min-w-0">
+                    <label for="areaFilter" class="sr-only">按区域筛选</label>
+                    <select id="areaFilter" class="toolbar-control w-full xl:w-auto px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-700 input-focus transition-all">
                       <option value="all">全部区域</option>
                       <option value="客厅">客厅</option>
                       <option value="厨房">厨房</option>
@@ -277,8 +309,9 @@
                     </select>
                   </div>
 
-                  <div class="relative w-full sm:w-auto">
-                    <select id="statusFilter" class="w-full sm:w-auto px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all">
+                  <div class="relative min-w-0">
+                    <label for="statusFilter" class="sr-only">按状态筛选</label>
+                    <select id="statusFilter" class="toolbar-control w-full xl:w-auto px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-700 input-focus transition-all">
                       <option value="all">全部状态</option>
                       <option value="已加购">已加购</option>
                       <option value="已下单">已下单</option>
@@ -289,8 +322,9 @@
                     </select>
                   </div>
 
-                  <div class="relative w-full sm:w-auto">
-                    <select id="sortFilter" class="w-full sm:w-auto px-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all">
+                  <div class="relative min-w-0">
+                    <label for="sortFilter" class="sr-only">记录排序</label>
+                    <select id="sortFilter" class="toolbar-control w-full xl:w-auto px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-700 input-focus transition-all">
                       <option value="date_desc">日期从新到旧</option>
                       <option value="date_asc">日期从旧到新</option>
                       <option value="amount_desc">金额从高到低</option>
@@ -298,22 +332,24 @@
                     </select>
                   </div>
 
-                  <div class="relative w-full sm:w-auto">
+                  <div class="relative col-span-2 md:col-span-2 xl:w-52">
+                    <label for="searchInput" class="sr-only">搜索支出项目</label>
                     <input type="text" id="searchInput" placeholder="搜索项目…"
-                      class="pl-8 pr-3 py-1.5 border border-neutral-300 rounded-lg text-sm input-focus transition-all w-full">
+                      class="toolbar-control pl-9 pr-3 py-2 border border-neutral-300 rounded-lg text-sm input-focus transition-all w-full">
                     <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400"></i>
+                  </div>
                   </div>
                 </div>
               </div>
 
-              <div id="filterStats" class="mb-4 text-sm text-neutral-500 hidden">
-                显示 <span id="filteredCount">0</span> 条记录，总计 <span id="totalExpense">¥0.00</span>
+              <div id="filterStats" class="filter-summary mb-4 px-3 py-2.5 text-sm hidden">
+                显示 <span id="filteredCount" class="font-semibold text-neutral-800">0</span> 条记录，总计 <span id="totalExpense" class="font-semibold text-primary money-nums">¥0.00</span>
               </div>
 
               <div id="expenseCards" class="md:hidden space-y-3"></div>
 
-              <div class="hidden md:block overflow-x-auto">
-                <table class="w-full min-w-[1000px] divide-y divide-neutral-200">
+              <div class="hidden md:block max-h-[65vh] overflow-auto rounded-lg border border-neutral-200">
+                <table class="data-table w-full min-w-[1000px] divide-y divide-neutral-200">
                   <thead>
                     <tr>
                       <th class="px-2 py-2 bg-neutral-50 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider rounded-tl-lg whitespace-nowrap">类别</th>
@@ -340,18 +376,21 @@
                   </tbody>
                 </table>
               </div>
-            </div>
+            </section>
           </div>
         </div>
       </div>
     </main>
 
     <!-- 编辑项目模态框 -->
-    <div id="editModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden transition-opacity duration-300">
-      <div class="bg-white rounded-xl p-5 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0 card-shadow" id="editModalContent">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold text-neutral-700">编辑项目</h3>
-          <button type="button" id="closeEditModal" aria-label="关闭编辑窗口" class="text-neutral-400 hover:text-neutral-600 transition-colors focus-ring rounded">
+    <div id="editModal" class="mobile-dialog fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+      <div class="modal-panel bg-white rounded-xl p-5 sm:p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto transform transition-all duration-300 scale-95 opacity-0" id="editModalContent">
+        <div class="flex justify-between items-center mb-5">
+          <div>
+            <h3 id="editModalTitle" class="text-xl font-semibold tracking-tight text-neutral-900">编辑项目</h3>
+            <p class="text-sm text-neutral-500 mt-1">更新支出信息和采购状态。</p>
+          </div>
+          <button type="button" id="closeEditModal" aria-label="关闭编辑窗口" class="icon-button inline-flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors focus-ring rounded-lg">
             <i class="fa fa-times text-lg" aria-hidden="true"></i>
           </button>
         </div>
@@ -446,18 +485,18 @@
 
           <div>
             <label class="block text-sm font-medium text-neutral-600 mb-1">图片</label>
-            <div class="flex space-x-2">
-              <button type="button" id="editSelectImageButton" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center whitespace-nowrap">
+            <div class="mobile-stack flex gap-2">
+              <button type="button" id="editSelectImageButton" class="min-h-[44px] bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center whitespace-nowrap focus-ring">
                 <i class="fa fa-upload mr-2"></i>选择图片文件
               </button>
-              <div id="editImageUploadArea" class="flex-1 border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center cursor-text hover:border-primary transition-colors relative">
+              <div id="editImageUploadArea" class="min-h-[88px] flex-1 border-2 border-dashed border-neutral-300 rounded-lg p-3 text-center bg-neutral-50 cursor-text hover:border-primary hover:bg-blue-50/40 transition-colors relative">
                 <input type="file" id="editImageInput" accept="image/*" class="hidden">
                 <div class="py-2">
                   <i class="fa fa-paste text-neutral-400 text-xl mb-2"></i>
                   <p class="text-sm text-neutral-500">点击此处并粘贴图片</p>
                   <p id="editImagePreviewText" class="text-xs text-neutral-400 mt-1 hidden">图片已添加</p>
                 </div>
-                <button type="button" id="deleteEditImageButton" aria-label="删除图片" class="absolute top-2 right-2 text-neutral-500 hover:text-danger p-1 rounded-full hover:bg-neutral-100 transition-colors hidden focus-ring">
+                <button type="button" id="deleteEditImageButton" aria-label="删除图片" class="icon-button absolute top-1 right-1 text-neutral-500 hover:text-danger rounded-full hover:bg-neutral-100 transition-colors hidden focus-ring">
                   <i class="fa fa-times" aria-hidden="true"></i>
                 </button>
               </div>
@@ -479,36 +518,36 @@
     </div>
 
     <!-- 确认删除模态框 -->
-    <div id="confirmDeleteModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden transition-opacity duration-300">
-      <div class="bg-white rounded-xl p-5 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0 card-shadow" id="confirmDeleteModalContent">
+    <div id="confirmDeleteModal" class="mobile-dialog fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden transition-opacity duration-300" role="alertdialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+      <div class="modal-panel bg-white rounded-xl p-5 sm:p-6 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="confirmDeleteModalContent">
         <div class="text-center mb-4">
           <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 text-danger mb-4">
             <i class="fa fa-exclamation-triangle text-2xl"></i>
           </div>
-          <h3 class="text-lg font-semibold text-neutral-800">确认删除</h3>
+          <h3 id="deleteModalTitle" class="text-lg font-semibold text-neutral-900">确认删除</h3>
           <p class="text-neutral-500 mt-2">您确定要删除这条记录吗？此操作不可撤销。</p>
         </div>
         <div class="flex justify-center gap-3">
-          <button type="button" id="cancelDelete" class="px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-50 transition-colors">取消</button>
-          <button type="button" id="confirmDelete" class="px-4 py-2 bg-danger hover:bg-danger/90 text-white font-medium rounded-lg transition-colors">删除</button>
+          <button type="button" id="cancelDelete" class="min-h-[44px] px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-50 transition-colors focus-ring">取消</button>
+          <button type="button" id="confirmDelete" class="min-h-[44px] px-4 py-2 bg-danger hover:bg-danger/90 text-white font-medium rounded-lg transition-colors focus-ring">删除</button>
         </div>
       </div>
     </div>
 
     <!-- 清空记录确认模态框 -->
-    <div id="confirmClearModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden transition-opacity duration-300">
-      <div id="confirmClearModalContent" class="bg-white rounded-xl w-full max-w-md mx-4 transform transition-all duration-300 scale-95 opacity-0">
+    <div id="confirmClearModal" class="mobile-dialog fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden transition-opacity duration-300" role="alertdialog" aria-modal="true" aria-labelledby="clearModalTitle">
+      <div id="confirmClearModalContent" class="modal-panel bg-white rounded-xl w-full max-w-md mx-4 transform transition-all duration-300 scale-95 opacity-0">
         <div class="p-6">
           <div class="text-center mb-4">
             <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-danger/10 text-danger mb-3">
               <i class="fa fa-exclamation-triangle text-xl"></i>
             </div>
-            <h3 class="text-lg font-semibold text-neutral-800">确认清空所有记录</h3>
+            <h3 id="clearModalTitle" class="text-lg font-semibold text-neutral-900">确认清空所有记录</h3>
             <p class="text-neutral-500 mt-2">您确定要清空所有支出记录吗？此操作不可撤销，所有数据将被永久删除。</p>
           </div>
           <div class="flex justify-center gap-3">
-            <button type="button" id="cancelClearAll" class="px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-50 transition-colors">取消</button>
-            <button type="button" id="confirmClearAll" class="px-4 py-2 bg-danger hover:bg-danger/90 text-white font-medium rounded-lg transition-colors">确认清空</button>
+              <button type="button" id="cancelClearAll" class="min-h-[44px] px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-50 transition-colors focus-ring">取消</button>
+              <button type="button" id="confirmClearAll" class="min-h-[44px] px-4 py-2 bg-danger hover:bg-danger/90 text-white font-medium rounded-lg transition-colors focus-ring">确认清空</button>
           </div>
         </div>
       </div>
@@ -517,7 +556,7 @@
     <!-- 图片预览模态框 -->
     <div id="imagePreviewModal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden transition-opacity duration-300">
       <div class="relative w-full max-w-4xl max-h-[90vh] p-4">
-        <button type="button" id="closeImagePreview" aria-label="关闭图片预览" class="absolute top-4 right-4 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center z-10 hover:bg-black/70 transition-colors focus-ring">
+        <button type="button" id="closeImagePreview" aria-label="关闭图片预览" class="icon-button absolute top-4 right-4 bg-black/50 text-white rounded-full flex items-center justify-center z-10 hover:bg-black/70 transition-colors focus-ring">
           <i class="fa fa-times" aria-hidden="true"></i>
         </button>
         <div class="relative w-full h-full flex items-center justify-center">
@@ -528,8 +567,8 @@
 
     <!-- 页脚 -->
     <footer class="bg-white border-t border-neutral-200 py-4 mt-auto">
-      <div class="container mx-auto px-4 text-center text-neutral-500 text-sm">
-        <p>装修管家支出记录 &copy; 2024 | 版本号: v2.0.0</p>
+      <div class="container mx-auto max-w-[1600px] px-4 sm:px-6 text-center text-neutral-500 text-sm">
+        <p>装修支出管家 &copy; 2026 | v2.1.0</p>
       </div>
     </footer>
   </div>
