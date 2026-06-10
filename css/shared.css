@@ -164,6 +164,32 @@ textarea:disabled {
   background: linear-gradient(135deg, #fff 40%, #eff6ff 100%);
 }
 
+.summary-card-link {
+  display: block;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  touch-action: manipulation;
+}
+
+.summary-card-link:active {
+  border-color: rgb(37 99 235 / 0.42);
+  transform: scale(0.985);
+}
+
+.summary-link-hint {
+  position: absolute;
+  z-index: 1;
+  right: 1rem;
+  bottom: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
 .summary-label {
   position: relative;
   z-index: 1;

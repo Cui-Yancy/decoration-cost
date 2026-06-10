@@ -52,14 +52,16 @@
         </div>
 
         <section class="summary-grid grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-5" aria-label="支出总览">
-          <div class="summary-card summary-card-primary surface-card p-4 sm:p-5 min-w-0">
+          <a href="#analyticsPanel" class="summary-card summary-card-link summary-card-primary surface-card p-4 sm:p-5 min-w-0 focus-ring" aria-label="查看支出统计">
             <p class="summary-label mb-2">总支出</p>
             <p id="summaryTotalAmount" class="summary-value text-xl sm:text-3xl font-bold text-primary money-nums break-words">¥0.00</p>
-          </div>
-          <div class="summary-card surface-card p-4 sm:p-5 min-w-0">
+            <span class="summary-link-hint">查看统计 <i class="fa fa-angle-down" aria-hidden="true"></i></span>
+          </a>
+          <a href="#recordsPanel" class="summary-card summary-card-link surface-card p-4 sm:p-5 min-w-0 focus-ring" aria-label="查看支出记录">
             <p class="summary-label mb-2">记录数</p>
             <p id="summaryRecordCount" class="summary-value text-2xl sm:text-3xl font-bold text-neutral-900 money-nums">0</p>
-          </div>
+            <span class="summary-link-hint">查看记录 <i class="fa fa-angle-down" aria-hidden="true"></i></span>
+          </a>
           <div class="summary-card surface-card p-4 sm:p-5 min-w-0">
             <p class="summary-label mb-2">待跟进</p>
             <p id="summaryPendingCount" class="summary-value text-2xl sm:text-3xl font-bold text-warning money-nums">0</p>
@@ -218,7 +220,7 @@
           <!-- 右侧：统计和支出记录列表 -->
           <div class="content-stack lg:col-span-8 xl:col-span-9 flex flex-col gap-5 min-w-0">
             <!-- 统计图表区域 -->
-            <section class="analytics-panel surface-card p-5 sm:p-6 order-2" aria-labelledby="analyticsTitle">
+            <section id="analyticsPanel" class="analytics-panel surface-card p-5 sm:p-6 order-2 scroll-mt-24" aria-labelledby="analyticsTitle">
               <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-5 gap-3">
                 <div>
                   <h2 id="analyticsTitle" class="text-lg font-semibold tracking-tight text-neutral-900">支出统计</h2>
@@ -245,7 +247,7 @@
             </section>
 
             <!-- 支出记录列表 -->
-            <section class="records-panel surface-card p-4 sm:p-6 order-1" aria-labelledby="recordsTitle">
+            <section id="recordsPanel" class="records-panel surface-card p-4 sm:p-6 order-1 scroll-mt-24" aria-labelledby="recordsTitle">
               <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-5 gap-4">
                 <div>
                   <h2 id="recordsTitle" class="text-lg md:text-xl font-semibold tracking-tight text-neutral-900">支出记录</h2>
