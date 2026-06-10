@@ -1,0 +1,16 @@
+.venv/
+.git/
+.gitignore
+__pycache__/
+*.pyc
+.env
+.agents/
+.claude/
+.codex/
+logs/
+run/
+README.md
+Dockerfile
+docker-compose.yaml
+.dockerignore
+*.db

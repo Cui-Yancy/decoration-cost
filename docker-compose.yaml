@@ -1,0 +1,17 @@
+services:
+  decoration:
+    build: .
+    container_name: decoration-app
+
+    restart: unless-stopped
+
+    ports:
+      - "5000:5000"
+
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+
+    environment:
+      DECORATION_DB: /app/data/decoration.db
+      TZ: Asia/Shanghai

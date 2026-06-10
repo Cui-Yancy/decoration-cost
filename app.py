@@ -7,7 +7,14 @@ from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__)
-DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'decoration.db')
+
+_base_dir = os.path.dirname(os.path.abspath(__file__))
+DATABASE = os.environ.get('DECORATION_DB')
+if not DATABASE:
+    _data_db = os.path.join(_base_dir, 'data', 'decoration.db')
+    _legacy_db = os.path.join(_base_dir, 'decoration.db')
+    DATABASE = _data_db if os.path.exists(_data_db) else _legacy_db
+del _base_dir, _data_db, _legacy_db
 
 def get_db():
     db = sqlite3.connect(DATABASE)
