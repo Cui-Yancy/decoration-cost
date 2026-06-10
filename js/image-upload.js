@@ -14,12 +14,18 @@ const ImageUpload = {
   },
 
   setupImageUpload(prefix) {
-    const imageUploadArea = document.getElementById(prefix + 'imageUploadArea');
-    const imageFileInput = document.getElementById(prefix + 'imageInput');
-    const imageUrl = document.getElementById(prefix + 'imageUrl');
-    const imagePreviewText = document.getElementById(prefix + 'imagePreviewText');
-    const selectImageButton = document.getElementById(prefix + 'selectImageButton');
-    const deleteImageButton = document.getElementById(prefix + 'deleteImageButton');
+    const prefixedId = (id) => prefix
+      ? prefix + id.charAt(0).toUpperCase() + id.slice(1)
+      : id;
+    const imageUploadArea = document.getElementById(prefixedId('imageUploadArea'));
+    const imageFileInput = document.getElementById(prefixedId('imageInput'));
+    const imageUrl = document.getElementById(prefixedId('imageUrl'));
+    const imagePreviewText = document.getElementById(prefixedId('imagePreviewText'));
+    const selectImageButton = document.getElementById(prefixedId('selectImageButton'));
+    const deleteButtonId = prefix
+      ? 'delete' + prefix.charAt(0).toUpperCase() + prefix.slice(1) + 'ImageButton'
+      : 'deleteImageButton';
+    const deleteImageButton = document.getElementById(deleteButtonId);
 
     if (!imageUploadArea || !imageFileInput || !selectImageButton) return;
 
@@ -59,6 +65,7 @@ const ImageUpload = {
         e.preventDefault();
         e.stopPropagation();
         if (imageUrl) imageUrl.value = '';
+        imageFileInput.value = '';
         if (imagePreviewText) imagePreviewText.classList.add('hidden');
         deleteImageButton.classList.add('hidden');
       });
