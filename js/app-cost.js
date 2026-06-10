@@ -473,12 +473,15 @@ const UIController = {
 
   createExpenseCard(expense, totalPrice, formattedDate) {
     const card = document.createElement('article');
-    card.className = 'border border-neutral-200 rounded-lg p-4 bg-white';
+    const productDetails = [expense.category || '-', expense.area || '-', expense.brand, expense.model]
+      .filter(Boolean)
+      .join(' · ');
+    card.className = 'expense-card border border-neutral-200 rounded-lg p-4 bg-white';
     card.innerHTML =
       '<div class="flex items-start justify-between gap-3">' +
         '<div class="min-w-0">' +
           '<h3 class="font-semibold text-neutral-900 truncate">' + this.escapeHtml(expense.name || '-') + '</h3>' +
-          '<p class="text-sm text-neutral-500 mt-1">' + this.escapeHtml(expense.category || '-') + ' · ' + this.escapeHtml(expense.area || '-') + '</p>' +
+          '<p class="text-sm text-neutral-500 mt-1 truncate" title="' + this.escapeHtml(productDetails) + '">' + this.escapeHtml(productDetails) + '</p>' +
         '</div>' +
         '<p class="font-bold text-primary money-nums whitespace-nowrap">' + this.formatCurrency(totalPrice) + '</p>' +
       '</div>' +
@@ -487,9 +490,11 @@ const UIController = {
         '<span class="inline-flex items-center px-2 py-1 rounded-full bg-neutral-100 text-neutral-600">' + this.escapeHtml(expense.channel || '-') + '</span>' +
         '<span class="inline-flex items-center px-2 py-1 rounded-full bg-neutral-100 text-neutral-600">' + this.escapeHtml(formattedDate || '-') + '</span>' +
       '</div>' +
-      '<div class="mt-3 flex items-center justify-between gap-3">' +
-        '<p class="text-sm text-neutral-500 truncate">' + this.escapeHtml(expense.brand || expense.model || expense.notes || '暂无备注') + '</p>' +
-        '<div class="flex items-center gap-2 shrink-0">' +
+      (expense.notes
+        ? '<p class="mt-3 text-sm text-neutral-700 truncate" title="' + this.escapeHtml(expense.notes) + '"><span class="font-medium text-neutral-500">备注：</span>' + this.escapeHtml(expense.notes) + '</p>'
+        : '') +
+      '<div class="mt-2 flex justify-end">' +
+        '<div class="flex items-center gap-2">' +
           (expense.imageUrl ? '<button type="button" aria-label="预览图片" class="p-2 text-primary hover:bg-primary/5 rounded-lg preview-image-btn focus-ring" data-image="' + this.escapeHtml(expense.imageUrl) + '"><i class="fa fa-image" aria-hidden="true"></i></button>' : '') +
           '<button type="button" aria-label="编辑记录" class="p-2 text-neutral-600 hover:text-primary hover:bg-primary/5 rounded-lg edit-btn focus-ring" data-id="' + this.escapeHtml(expense.id) + '"><i class="fa fa-pencil" aria-hidden="true"></i></button>' +
           '<button type="button" aria-label="删除记录" class="p-2 text-neutral-600 hover:text-danger hover:bg-red-50 rounded-lg delete-btn focus-ring" data-id="' + this.escapeHtml(expense.id) + '"><i class="fa fa-trash" aria-hidden="true"></i></button>' +
