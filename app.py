@@ -14,7 +14,8 @@ if not DATABASE:
     _data_db = os.path.join(_base_dir, 'data', 'decoration.db')
     _legacy_db = os.path.join(_base_dir, 'decoration.db')
     DATABASE = _data_db if os.path.exists(_data_db) else _legacy_db
-del _base_dir, _data_db, _legacy_db
+    del _data_db, _legacy_db
+del _base_dir
 
 def get_db():
     db = sqlite3.connect(DATABASE)
