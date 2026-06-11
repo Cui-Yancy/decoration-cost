@@ -283,6 +283,11 @@ const UIController = {
     const searchInput = document.getElementById('searchInput');
     if (searchInput) searchInput.addEventListener('input', (e) => this.handleSearchInput(e));
 
+    const refreshButton = document.getElementById('refreshData');
+    if (refreshButton) {
+      refreshButton.addEventListener('click', () => this.handleRefresh());
+    }
+
     const exportBtn = document.getElementById('exportData');
     if (exportBtn) {
       exportBtn.addEventListener('click', () => {
@@ -409,7 +414,8 @@ const UIController = {
         if (expenseCards) {
           expenseCards.innerHTML = '<div class="text-center bg-neutral-50 border border-neutral-200 rounded-lg p-8 text-neutral-400"><i class="fa fa-folder-open-o text-2xl mb-2 block"></i>' + emptyText + '</div>';
         }
-        return;
+        await this.updateChart();
+        return true;
       }
 
       expenses.forEach(expense => {
@@ -462,12 +468,14 @@ const UIController = {
       });
 
       await this.updateChart();
+      return true;
     } catch (error) {
       console.error('加载支出记录失败:', error);
       const expenseList = document.getElementById('expenseList');
       if (expenseList) {
         expenseList.innerHTML = '<tr class="text-center table-row-animate"><td colspan="12" class="px-3 py-8 text-danger"><i class="fa fa-exclamation-circle text-2xl mb-2 block"></i>加载记录失败，请刷新页面重试</td></tr>';
       }
+      return false;
     }
   },
 
@@ -742,6 +750,27 @@ const UIController = {
 
   handleSearchInput(e) {
     this.loadExpenseList({ ...this.getCurrentFilterCriteria(), searchTerm: e.target.value });
+  },
+
+  async handleRefresh() {
+    const button = document.getElementById('refreshData');
+    const icon = button ? button.querySelector('.fa-refresh') : null;
+    if (!button || button.disabled) return;
+
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    button.setAttribute('aria-label', '正在刷新支出数据');
+    if (icon) icon.classList.add('fa-spin');
+
+    try {
+      const refreshed = await this.loadExpenseList(this.getCurrentFilterCriteria());
+      NotificationUtils.show(refreshed ? '数据已刷新' : '数据刷新失败，请稍后重试', refreshed ? 'success' : 'error');
+    } finally {
+      button.disabled = false;
+      button.removeAttribute('aria-busy');
+      button.setAttribute('aria-label', '刷新支出数据');
+      if (icon) icon.classList.remove('fa-spin');
+    }
   },
 
   async initChart() {

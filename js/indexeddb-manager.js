@@ -67,7 +67,7 @@ function createIndexedDBManager(dbName, storeName, indexes) {
         });
       } catch (e) {
         console.error('获取记录出错:', e);
-        return [];
+        throw e;
       }
     },
 

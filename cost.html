@@ -35,7 +35,11 @@
           </span>
         </a>
 
-        <nav aria-label="主导航">
+        <nav class="flex items-center gap-1 sm:gap-2" aria-label="主导航">
+          <button type="button" id="refreshData" class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold text-neutral-600 hover:text-primary hover:bg-blue-50 transition-colors focus-ring" aria-label="刷新支出数据" title="刷新支出数据">
+            <i class="fa fa-refresh sm:mr-2" aria-hidden="true"></i>
+            <span class="hidden sm:inline">刷新数据</span>
+          </button>
           <a href="index.html" class="min-h-[44px] inline-flex items-center px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold text-neutral-600 hover:text-primary hover:bg-blue-50 transition-colors focus-ring">
             <i class="fa fa-arrow-left mr-2" aria-hidden="true"></i>
             返回首页

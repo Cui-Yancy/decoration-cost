@@ -77,12 +77,12 @@ function createApiClient(baseURL, storeName) {
 
     async getAllRecords() {
       try {
-        const resp = await fetch(baseURL + '/api/' + this.storeName);
+        const resp = await fetch(baseURL + '/api/' + this.storeName, { cache: 'no-store' });
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         return await resp.json();
       } catch (e) {
         console.error('获取记录失败:', e);
-        return [];
+        throw e;
       }
     },
 
