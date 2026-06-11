@@ -8,7 +8,10 @@
 ├── index.html              # 首页
 ├── cost.html               # 支出管理
 ├── app.py                  # Flask 后端（服务器模式）
+├── manifest.json           # PWA 应用清单
+├── service-worker.js       # 离线缓存与页面回退
 ├── requirements.txt        # Python 依赖
+├── icons/                  # PWA 与 iOS 应用图标
 ├── css/
 │   └── shared.css          # 共享样式
 └── js/
@@ -19,8 +22,20 @@
     ├── image-upload.js     # 图片上传
     ├── notification.js     # 通知系统
     ├── import-export.js    # 数据导入导出 + 迁移适配器
+    ├── pwa-register.js     # Service Worker 注册
     └── app-cost.js         # 支出管理页面逻辑
 ```
+
+## PWA 安装与离线使用
+
+- **Android Chrome**：打开网站后，通过浏览器菜单选择「安装应用」或「添加到主屏幕」。
+- **iOS Safari**：点击分享按钮，选择「添加到主屏幕」。
+- 安装后应用以独立窗口启动，页面与静态资源在首次访问后可离线打开。
+- 服务器模式下，离线时页面仍可打开，但服务器 API 数据读写需要网络连接。
+
+Service Worker 仅能在 HTTPS 或 `localhost` 安全上下文中运行。局域网通过
+`http://<服务器IP>:5000` 访问时，应在 Flask 前配置 HTTPS 反向代理，才能启用
+完整的安装与离线能力。
 
 ## 两种使用模式
 

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">装修支出管家</title>
+  <rect width="512" height="512" rx="112" fill="#2563eb"/>
+  <path d="M112 238 256 112l144 126v158c0 22-18 40-40 40H152c-22 0-40-18-40-40V238Z" fill="#fff"/>
+  <path d="M88 250 256 102l168 148-32 36-136-120-136 120-32-36Z" fill="#dbeafe"/>
+  <rect x="216" y="304" width="80" height="132" rx="12" fill="#2563eb"/>
+  <path d="M332 218h72v72h-72z" fill="#f97316"/>
+  <path d="M350 234h36v8h-36zm0 16h36v8h-36zm0 16h24v8h-24z" fill="#fff"/>
+</svg>
