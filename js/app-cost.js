@@ -365,7 +365,7 @@ const UIController = {
         if (deleteBtn) deleteBtn.classList.add('hidden');
         await this.loadExpenseList();
         await this.updateChart();
-        NotificationUtils.show('添加成功', 'success');
+        NotificationUtils.show('支出项目添加成功', 'success');
       } else {
         NotificationUtils.show('添加失败', 'error');
       }

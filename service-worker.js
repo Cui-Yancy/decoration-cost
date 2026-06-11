@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'decoration-cost-v1';
+const CACHE_VERSION = 'decoration-cost-v2';
 const APP_CACHE = `${CACHE_VERSION}-app`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 

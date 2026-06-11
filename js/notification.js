@@ -1,7 +1,9 @@
 /* 装修管家 - 通知系统 */
 const NotificationUtils = {
-  show(message, type) {
+  show(message, type = 'info') {
     console.log('[装修管家] ' + message);
+
+    this.showToast(message, type);
 
     const importantActions = ['导出成功', '导出失败', '数据导入成功', '数据导入失败'];
     const shouldShowNotification = importantActions.some(action => message.includes(action));
@@ -13,5 +15,48 @@ const NotificationUtils = {
         tag: 'decoration-app'
       });
     }
+  },
+
+  showToast(message, type) {
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toastContainer';
+      container.className = 'toast-container';
+      container.setAttribute('aria-live', 'polite');
+      container.setAttribute('aria-atomic', 'true');
+      document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    const normalizedType = ['success', 'error', 'info'].includes(type) ? type : 'info';
+    const iconClass = {
+      success: 'fa-check-circle',
+      error: 'fa-exclamation-circle',
+      info: 'fa-info-circle'
+    }[normalizedType];
+
+    toast.className = `app-toast app-toast-${normalizedType}`;
+    toast.setAttribute('role', normalizedType === 'error' ? 'alert' : 'status');
+
+    const icon = document.createElement('i');
+    icon.className = `fa ${iconClass} app-toast-icon`;
+    icon.setAttribute('aria-hidden', 'true');
+
+    const text = document.createElement('span');
+    text.className = 'app-toast-message';
+    text.textContent = message;
+
+    toast.appendChild(icon);
+    toast.appendChild(text);
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add('is-visible'));
+
+    window.setTimeout(() => {
+      toast.classList.remove('is-visible');
+      toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+      window.setTimeout(() => toast.remove(), 300);
+    }, 3000);
   }
 };
